@@ -1,0 +1,14 @@
+
+xmonad.hs:367:1: warning: [-Wtabs]
+    Tab character found here, and in 32 further locations.
+    Please use spaces instead.
+    |
+367 |                                                 spawnOn wsTERM "terminator -e cmus"
+    | ^^^^^^^^
+
+xmonad.hs:637:27: warning: [-Wdeprecations]
+    In the use of ‘spacing’ (imported from XMonad.Layout.Spacing):
+    Deprecated: "Use spacingRaw instead."
+    |
+637 |     mySpacing           = spacing gap
+    |                           ^^^^^^^
