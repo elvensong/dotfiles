@@ -398,7 +398,7 @@ myBrowserClass      = "Google-chrome-beta"
 myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
 --myLauncher          = "dmenu_run"
 --myLauncher          = "rofi -matching fuzzy -show run"
-myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/solarized-darker.rasi"
+myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
 
 
 -- I'm using a custom browser launching script (see myBrowser above) that
