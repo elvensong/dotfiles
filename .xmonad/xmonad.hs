@@ -213,6 +213,8 @@ import XMonad.Layout.WindowNavigation
 
 import XMonad.Prompt                        -- to get my old key bindings working
 import XMonad.Prompt.ConfirmPrompt          -- don't just hard quit
+import XMonad.Prompt.XMonad
+import XMonad.Prompt.AppLauncher as AL
 
 import XMonad.Util.Cursor
 import XMonad.Util.EZConfig                 -- removeKeys, additionalKeys
@@ -327,34 +329,31 @@ myConfig p = def
 -- wsWRK2  = "WRK:2"
 -- wsGGC   = "GGC"
 
-wsECL      = "1: Emacs"
-wsPOS      = "2: Postman"
-wsCHR      = "3: Browser"
-wsTERM     = "4: Terminal"
-wsCHAT     = "5: Chat"
-wsEMA      = "6: Docs"
-wsFLO      = "7: Float"
-
+wsIDE      = "1|IDE"
+wsBRW      = "2|BRW"
+wsTERM      = "3|TERM"
+wsCHT     = "4|CHT"
+wsDOC      = "5|DOC"
 
 -- myWorkspaces = map show [1..9]
-myWorkspaces = [wsECL, wsPOS, wsCHR, wsTERM, wsCHAT, wsEMA, wsFLO]
+myWorkspaces = [wsIDE, wsBRW, wsTERM, wsCHT, wsDOC]
 
 projects :: [Project]
 projects =
 
-    [ Project   { projectName       = wsECL
+    [ Project   { projectName       = wsIDE
                 , projectDirectory  = "~/eclipse-workspace/"
-                , projectStartHook  = Just $ do spawnOn wsECL "emacs"
+                , projectStartHook  = Just $ do spawn ""
                 }
 
-    , Project   { projectName       = wsPOS
-                , projectDirectory  = "~/Postman"
-                , projectStartHook  = Just $ do spawnOn wsPOS ""
+    , Project   { projectName       = wsBRW
+                , projectDirectory  = "~/Downloads"
+                , projectStartHook  = Just $ do spawnOn wsBRW myBrowser
                 }
 
-    , Project   { projectName       = wsCHR
+    , Project   { projectName       = wsCHT
                 , projectDirectory  = "~/"
-                , projectStartHook  = Just $ do spawnOn wsCHR myBrowser
+                , projectStartHook  = Just $ do spawn ""
 
                 }
 
@@ -362,21 +361,8 @@ projects =
                 , projectDirectory  = "~/"
                 , projectStartHook  = Just $ do spawnOn wsTERM myTerminal
                                                 spawnOn wsTERM "sleep 1"
-                                                spawnOn wsTERM "terminator -e glances"
-                                                spawnOn wsTERM "sleep 1"
-						spawnOn wsTERM "terminator -e cmus"
-                                                spawnOn wsTERM "sleep 1"
                                                 spawnOn wsTERM myTerminal
                 }
-
-    , Project   { projectName       = wsCHAT
-                , projectDirectory  = "~/"
-                , projectStartHook  = Just $ do spawnOn wsCHAT "terminator -e nctelegram"
-                }
-    , Project	{ projectName	    = wsEMA
-      		, projectDirectory  = "~/"
-		, projectStartHook  = Just $ do spawnOn wsEMA ""
-		}
     ]
 
 ------------------------------------------------------------------------}}}
@@ -389,6 +375,7 @@ projects =
 --myTerminalClass     = "Terminator"
 myTerminal          = "terminator"
 myIDE                 = "eclipse"
+myEditor              = "emacs"
 volumeMute             = "pactl set-sink-mute 0 toggle"
 volumeUp         = "pactl set-sink-volume 0 +1%"
 volumeDown       = "pactl set-sink-volume 0 -1%"
@@ -421,54 +408,15 @@ myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home
 -- * bindOn via X.A.PerWorkspaceKeys (NO... now using ConditionalKeys custom module)
 -- * bindOn via X.A.ConditionalKeys
 
--- TODO: change this to a lookup for all workspaces
-hangoutsCommand     = myBrowser ++ " --app-id=knipolnnllmklapflnccelgolnpehhpl"
-hangoutsTitle     = "Google Hangouts - Melih Tolga Şahin the_zge@live.nl"
-hangoutsPrefix      = "Google Hangouts"
-hangoutsResource    = "crx_nckgahadagoaajjgafhacjanaoiihapd"
-isHangoutsFor s     = (className =? myBrowserClass
-                      <&&> fmap (isPrefixOf hangoutsPrefix) title
-                      <&&> fmap (isInfixOf s) title)
-isPersonalHangouts  = isHangoutsFor "melihtolgasahin"
-isWorkHangouts      = isHangoutsFor "melihtolgasahin"
-
--- TODO: change this to a lookup for all workspaces
-trelloCommand       = "dex $HOME/.local/share/applications/Trello.desktop"
-trelloWorkCommand   = "dex $HOME/.local/share/applications/TrelloWork.desktop"
-trelloWork2Command  = "dex $HOME/.local/share/applications/TrelloWork2.desktop"
-trelloInfix         = "Trello"
-trelloResource      = "crx_jijnmpkkfkjaihbhffejemnpbbglahim"
-trelloWorkResource  = "crx_fkbbihpadkgbnhphndjgblgelahbiede"
-trelloWork2Resource = "crx_bgemgoheeofmogacohnlmpldjlogegoh"
-isTrello            = (resource =? trelloResource)
-isTrelloWork        = (resource =? trelloWorkResource)
-isTrelloWork2       = (resource =? trelloWork2Resource)
-
-googleMusicCommand  = "dex $HOME/.local/share/applications/Music.desktop"
-googleMusicInfix    = "Google Play Music"
-googleMusicResource = "crx_ioljlgoncmlkbcepmminebblkddfjofl"
-isGoogleMusic       = (resource =? googleMusicResource)
-
-plexCommand         = "dex $HOME/.local/share/applications/Plex.desktop"
-plexInfix           = "Plex"
-plexResource        = "crx_fpniocchabmgenibceglhnfeimmdhdfm"
-isPlex              = (resource =? plexResource)
-
-isConsole           = (className =? "Terminator")
-                    <&&> (stringProperty "WM_WINDOW_ROLE" =? "Scratchpad")
-myConsole           = "terminator -T console -p console --role=Scratchpad"
-
-scratchpads =
-    [   (NS "hangoutsPersonal"  hangoutsCommand isPersonalHangouts defaultFloating)
-    ,   (NS "hangoutsWork"  hangoutsCommand isWorkHangouts defaultFloating)
-    ,   (NS "trello"  trelloCommand isTrello nonFloating)
-    ,   (NS "trelloWork"  trelloWorkCommand isTrelloWork nonFloating)
-    ,   (NS "googleMusic"  googleMusicCommand isGoogleMusic nonFloating)
-    ,   (NS "plex"  plexCommand isPlex defaultFloating)
-    ,   (NS "console"  myConsole isConsole nonFloating)
-    ,   (NS "xawtv" "xawtv" (resource =? "xawtv") (customFloating $ W.RationalRect (2/3) (1/6) (1/5) (1/3)) )
-    ] 
-
+myScratchPads =
+    [ (NS "cmus" "terminator -e cmus --title=cmus --role=scratchpad" (title =? "cmus") (customFloating $ W.RationalRect l t w h))
+    , (NS "term" "terminator --title=scratchpad --role=scratchpad"  (title =? "scratchpad") (customFloating $ W.RationalRect l t w h))
+    ]
+    where
+      h = 0.9
+      w = 0.9
+      t = 0.95 - h
+      l = 0.95 - w
 ------------------------------------------------------------------------}}}
 -- Theme                                                                {{{
 ---------------------------------------------------------------------------
@@ -480,21 +428,21 @@ base03  = "#330000"
 base02  = "#073642"
 base01  = "#586e75"
 base00  = "#657b83"
-base0   = "#839496"
-base1   = "#93a1a1"
-base2   = "#eee8d5"
-base3   = "#fdf6e3"
-yellow  = "#EF1F60"
+base0   = "#21242b"
+base1   = "#2c313a"
+base2   = "#515f61"
+base3   = "#777c80"
+yellow  = "#ECBE7B"
 orange  = "#cb4b16"
 red     = "#dc322f"
 magenta = "#c678dd"
 violet  = "#6c71c4"
--- blue    = "#FCF98C"
 cyan    = "#2aa198"
 green   = "#859900"
 blue    = "#51afef"
 teal    = "#4db5bd"
 lightgrey = "#5b6268"
+fg      = "#bbc2cf"
 
 -- sizes
 gap         = 3
@@ -565,6 +513,12 @@ hotPromptTheme = myPromptTheme
     , position              = Bottom
     }
 
+floatPromptTheme = myPromptTheme
+    {
+      height                = prompt
+    , position              = CenteredAt 0.5 0.5
+    }
+
 myShowWNameTheme = def
     { swn_font              = myWideFont
     , swn_fade              = 0.5
@@ -605,7 +559,6 @@ barFull = avoidStruts $ Simplest
 -- cf http://xmonad.org/xmonad-docs/xmonad-contrib/src/XMonad-Config-Droundy.html
 
 myLayoutHook = showWorkspaceName
-             $ onWorkspace wsFLO floatWorkSpace
              $ fullscreenFloat -- fixes floating windows going full screen, while retaining "bounded" fullscreen
              $ fullScreenToggle
              $ fullBarToggle
@@ -617,7 +570,6 @@ myLayoutHook = showWorkspaceName
 --    testTall = Tall 1 (1/50) (2/3)
 --    myTall = subLayout [] Simplest $ trackFloating (Tall 1 (1/20) (1/2))
 
-    floatWorkSpace      = simplestFloat
     fullBarToggle       = mkToggle (single FULLBAR)
     fullScreenToggle    = mkToggle (single FULL)
     mirrorToggle        = mkToggle (single MIRROR)
@@ -1196,6 +1148,7 @@ myKeys conf = let
     -----------------------------------------------------------------------
     subKeys "System"
     [ ("M-q"                    , addName "Restart XMonad"                  $ spawn "xmonad --restart")
+    , ("M-C-u"                  , addName "Shutdown"                        $ confirmPrompt floatPromptTheme "Shutdown" $ spawn "shutdown -h now")
     , ("M-C-q"                  , addName "Rebuild & restart XMonad"        $ spawn "xmonad --recompile && xmonad --restart")
     , ("M-S-q"                  , addName "Quit XMonad"                     $ confirmPrompt hotPromptTheme "Quit XMonad" $ io (exitWith ExitSuccess))
     , ("M-o"                    , addName "Lock screen"                     $ spawn "xset s activate")
@@ -1208,7 +1161,6 @@ myKeys conf = let
     -----------------------------------------------------------------------
     subKeys "Actions"
     [ ("M-a"                    , addName "Notify w current X selection"    $ unsafeWithSelection "notify-send")
-  --, ("M-7"                    , addName "TESTING"                         $ runInTerm "-name glances" "glances" )
     , ("M-u"                    , addName "Copy current browser URL"        $ spawn "with-url copy")
     , ("M-o"                    , addName "Display (output) launcher"       $ spawn "displayctl menu")
     , ("M-<XF86Display>"        , addName "Display - force internal"        $ spawn "displayctl internal")
@@ -1227,16 +1179,24 @@ myKeys conf = let
     -----------------------------------------------------------------------
     subKeys "Launchers"
     [ ("M-<Space>"              , addName "Launcher"                        $ spawn myLauncher)
-    , ("M-<Return>"             , addName "Terminal"                        $ spawn myTerminal)
+    , ("M-C-<Return>"           , addName "Terminal"                        $ spawn myTerminal)
+    , ("M-p"                    , addName "Eclipse"                         $ spawn "eclipse")
     , ("M-b"                   , addName "Browser"                         $ spawn myBrowser)
     , ("<XF86AudioRaiseVolume>"                   , addName "Volume Up"                         $ spawn volumeUp)
     , ("<XF86AudioLowerVolume>"                   , addName "Volume Down"                         $ spawn volumeDown)
     , ("<XF86AudioMute>"                   , addName "Mute Sound"                         $ spawn volumeMute)
     , ("M-s s"                  , addName "Cancel submap"                   $ return ())
     , ("M-s M-s"                , addName "Cancel submap"                   $ return ())
+    -- Scratchpads
     ] ^++^
-
     -----------------------------------------------------------------------
+    -- ScratchPads
+    -----------------------------------------------------------------------
+    subKeys "ScratchPads"
+    [ ("M-<Return>"             , addName "Scratchpad Terminal"             $ namedScratchpadAction myScratchPads "term")
+    , ("M-C-c"                  , addName "Scratchpad Cmus"                 $ namedScratchpadAction myScratchPads "cmus")
+    ] ^++^
+    -------------------------------------------------------------------------
     -- Windows
     -----------------------------------------------------------------------
 
@@ -1487,8 +1447,8 @@ myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
     spawn "$HOME/bin/wm/init-tilingwm"
-    -- spawn "/home/ethan/bin/wm/init-tilingwm"
-    spawn "$HOME/bin/wm/init-wallpaper"
+
+    spawnOn wsIDE myEditor
 
     -- init-tray kills and restarts stalone tray, hence just "spawn" so it
     -- runs on restart and will suffice to reposition tray on display changes
@@ -1511,6 +1471,8 @@ restartXmonad = do
 -- Log                                                                  {{{
 ---------------------------------------------------------------------------
 
+arrowSign = "\57520"
+
 myLogHook h = do
 
     -- following block for copy windows marking
@@ -1524,15 +1486,14 @@ myLogHook h = do
     --dynamicLogWithPP $ defaultPP
     dynamicLogWithPP $ def
 
-        { ppCurrent             = xmobarColor blue "" . wrap "[" "]"
-        -- , ppTitle               = xmobarColor lightgrey "" . shorten 50
+        { ppCurrent             = xmobarColor base0 blue . wrap (xmobarColor base0 blue arrowSign) (xmobarColor blue base0 arrowSign)
         , ppTitle               = const ""
-        , ppVisible             = xmobarColor blue  "" . wrap "(" ")"
+        , ppVisible             = xmobarColor base0 base2 . wrap (xmobarColor base0 base2 arrowSign) (xmobarColor base2 base0 arrowSign)
         , ppUrgent              = xmobarColor red    "" . wrap " " " "
-        , ppHidden              = xmobarColor lightgrey "" . wrap "" ""
+        , ppHidden              = xmobarColor base2 base1 . wrap (xmobarColor base0 base1 arrowSign) (xmobarColor base1 base0 arrowSign)
         , ppHiddenNoWindows     = const ""
         , ppSep                 = xmobarColor red "" " | "
-        , ppWsSep               = " "
+        , ppWsSep               = ""
         , ppLayout              = xmobarColor yellow ""
         , ppOrder               = id
         , ppOutput              = hPutStrLn h  
@@ -1545,14 +1506,15 @@ myLogHook h = do
 myFadeHook = composeAll
     [ opaque -- default to opaque
     , isUnfocused --> opacity 0.85
-    , (className =? "Terminator") <&&> (isUnfocused) --> opacity 0.9
-    , (className =? "gnome-terminal") <&&> (isUnfocused) --> opacity 0.9
+    , (className =? myTerminal) <&&> (isUnfocused) --> opacity 0.9
+    , (isRole =? "scratchpad") --> opacity 0.8
     , fmap ("Google" `isPrefixOf`) className --> opaque
     , isDialog --> opaque 
     --, isUnfocused --> opacity 0.55
     --, isFloating  --> opacity 0.75
     ]
-
+    where
+      isRole = stringProperty "WM_WINDOW_ROLE"
 ------------------------------------------------------------------------}}}
 -- Actions                                                              {{{
 ---------------------------------------------------------------------------
@@ -1584,20 +1546,15 @@ myManageHook :: ManageHook
 myManageHook =
         manageSpecific
     <+> manageDocks
-    <+> namedScratchpadManageHook scratchpads
     <+> fullscreenManageHook
     <+> manageSpawn
+    <+> namedScratchpadManageHook myScratchPads
     where
         manageSpecific = composeOne
             [ resource =? "desktop_window" -?> doIgnore
             , resource =? "stalonetray"    -?> doIgnore
             , resource =? "vlc"    -?> doFloat
             , resource =? "java" -?> doFloat
-            , resource =? trelloResource -?> doFullFloat
-            , resource =? trelloWorkResource -?> doFullFloat
-            , resource =? googleMusicResource -?> doFullFloat
-            , resource =? plexResource -?> doCenterFloat
-            , resource =? hangoutsResource -?> insertPosition End Newer
             , transience
             , isBrowserDialog -?> forceCenterFloat
             --, isConsole -?> forceCenterFloat
@@ -1632,14 +1589,8 @@ myManageHook =
 
 myHandleEventHook = docksEventHook
                 <+> fadeWindowsEventHook
-                <+> dynamicTitle myDynHook
                 <+> handleEventHook def
                 <+> XMonad.Layout.Fullscreen.fullscreenEventHook
-    where
-        myDynHook = composeAll
-            [ isPersonalHangouts --> forceCenterFloat
-            , isWorkHangouts --> insertPosition End Newer
-            ]
 
 ---------------------------------------------------------------------------
 -- Custom hook helpers
