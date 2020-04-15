@@ -6,7 +6,6 @@ export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
 export TERM=terminator
-ibus-daemon -drx
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/eve/.oh-my-zsh"
@@ -105,3 +104,5 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias edit="emacs -nw"
+alias la="ls -a"
+alias gs="git status"

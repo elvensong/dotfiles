@@ -1447,6 +1447,7 @@ myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
     spawn "$HOME/bin/wm/init-tilingwm"
+    spawn "picom &"
 
     spawnOn wsIDE myEditor
 

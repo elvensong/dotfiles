@@ -8,6 +8,8 @@
 
 !.rofi/
 !.xmonad/*.hs
+!.xmonad/lib/
 !.xmonad/xmobar.conf
 !.Xmodmap
 !.comptonrc
+!.list_packages

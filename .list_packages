@@ -1,40 +1,46 @@
-arandr
-autoconf
-automake
-base
-bison
-chromium
-cmus
-colorpicker
-dhcpcd
-eclipse-jee
-emacs
-fakeroot
-feh
-firefox
-flex
-groff
-grub
-ibus
-otf-fira-code-git
-picom
-pkgconf
-postman-bin
-powerline-fonts-git
-qutebrowser
-rar
-rofi
-terminator
-tomcat8
-tomcat9
-ttf-font-awesome-4
-vim
-virtualbox-guest-utils
-wget
-xf86-video-vmware
-xmobar
-xmonad-contrib
-xorg-server
-xorg-xinit
-yay
-zsh
+alsa-utils 1.2.2-1
+android-studio 3.6.2.0-1
+android-tools 29.0.6-1
+android-udev 20191103-1
+autoconf 2.69-7
+automake 1.16.2-1
+base 2-2
+bison 3.5.4-1
+broot 0.13.6-1
+cmus 2.8.0-3
+dhcpcd 8.1.7-1
+emacs 26.3-1
+evince 3.36.0-1
+fakeroot 1.24-2
+feh 3.3-2
+flex 2.6.4-3
+groff 1.22.4-3
+grub 2:2.04-5
+ibus 1.5.22-1
+jdk-openjdk 13.0.2.u8-1
+jdk11-openjdk 11.0.6.u10-1
+make 4.3-1
+nerd-fonts-fira-code 2.1.0-2
+ntfs-3g 2017.3.23-4
+nvidia 440.82-2
+otf-fira-code-git 2.r37.g1d7e14a-1
+otf-font-awesome-4 4.7.0-5
+patch 2.7.6-8
+pavucontrol 1:4.0-1
+pick-colour-picker 1.5-5
+picom 7.5-3
+pkgconf 1.6.3-3
+powerline-fonts-git r202.e80e3eb-1
+qutebrowser 1.10.1-1
+ripgrep 12.0.1-1
+rofi 1.5.4-1
+rtorrent 0.9.8-2
+terminator 1.91-6
+ttf-font-awesome-4 4.7.0-5
+vim 8.2.0510-1
+xbindkeys 1.8.6-3
+xmobar 0.33-31
+xmonad-contrib 0.16-19
+xorg-xinit 1.4.1-1
+yay 9.4.6-2
+zsh 5.8-1
