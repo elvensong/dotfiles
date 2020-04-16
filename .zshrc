@@ -106,3 +106,4 @@ source $ZSH/oh-my-zsh.sh
 alias edit="emacs -nw"
 alias la="ls -a"
 alias gs="git status"
+alias cl="clear"

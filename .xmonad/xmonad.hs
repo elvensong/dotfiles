@@ -447,12 +447,12 @@ fg      = "#bbc2cf"
 -- sizes
 gap         = 3
 topbar      = 0
-border      = 3
+border      = 2
 prompt      = 20
 status      = 10
 
-myNormalBorderColor     = "#BC3135"
-myFocusedBorderColor    = violet
+myNormalBorderColor     = base0
+myFocusedBorderColor    = blue
 
 active      = violet
 activeWarn  = blue
@@ -1448,6 +1448,7 @@ myStartupHook = do
     -- init-tilingwm sets up all major "desktop environment" like components
     spawn "$HOME/bin/wm/init-tilingwm"
     spawn "picom &"
+    spawn "dunst &"
 
     spawnOn wsIDE myEditor
 
@@ -1556,6 +1557,7 @@ myManageHook =
             , resource =? "stalonetray"    -?> doIgnore
             , resource =? "vlc"    -?> doFloat
             , resource =? "java" -?> doFloat
+            , resource =? "pavucontrol" -?> doCenterFloat
             , transience
             , isBrowserDialog -?> forceCenterFloat
             --, isConsole -?> forceCenterFloat
