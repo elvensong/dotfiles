@@ -329,11 +329,11 @@ myConfig p = def
 -- wsWRK2  = "WRK:2"
 -- wsGGC   = "GGC"
 
-wsIDE      = "1|IDE"
-wsBRW      = "2|BRW"
-wsTERM      = "3|TERM"
-wsCHT     = "4|CHT"
-wsDOC      = "5|DOC"
+wsIDE      = "<fn=1> \61729 </fn>"
+wsBRW      = "<fn=1> \62056 </fn>"
+wsTERM     = "<fn=1> \61728 </fn>"
+wsCHT      = "<fn=2> \64366 </fn>"
+wsDOC      = "<fn=2> \63256 </fn>"
 
 -- myWorkspaces = map show [1..9]
 myWorkspaces = [wsIDE, wsBRW, wsTERM, wsCHT, wsDOC]
@@ -382,7 +382,7 @@ volumeDown       = "pactl set-sink-volume 0 -1%"
 myAltTerminal       = "cool-retro-term"
 myBrowser           = "qutebrowser" -- chrome with WS profile dirs
 myBrowserClass      = "Google-chrome-beta"
-myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
+myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar1.cfg"
 --myLauncher          = "dmenu_run"
 --myLauncher          = "rofi -matching fuzzy -show run"
 myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
@@ -1446,7 +1446,8 @@ myMouseBindings (XConfig {XMonad.modMask = myModMask}) = M.fromList $
 myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
-    spawn "$HOME/bin/wm/init-tilingwm"
+    spawn "killall picom xmobar"
+    spawn "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
     spawn "picom &"
     spawn "dunst &"
 
@@ -1488,14 +1489,14 @@ myLogHook h = do
     --dynamicLogWithPP $ defaultPP
     dynamicLogWithPP $ def
 
-        { ppCurrent             = xmobarColor base0 blue . wrap (xmobarColor base0 blue arrowSign) (xmobarColor blue base0 arrowSign)
+        { ppCurrent             = xmobarColor fg "#000000" . wrap "<fc=#ffffff,#000000>" "</fc>"
         , ppTitle               = const ""
-        , ppVisible             = xmobarColor base0 base2 . wrap (xmobarColor base0 base2 arrowSign) (xmobarColor base2 base0 arrowSign)
+        , ppVisible             = xmobarColor base0 base2
         , ppUrgent              = xmobarColor red    "" . wrap " " " "
-        , ppHidden              = xmobarColor base2 base1 . wrap (xmobarColor base0 base1 arrowSign) (xmobarColor base1 base0 arrowSign)
+        , ppHidden              = xmobarColor base2 base1
         , ppHiddenNoWindows     = const ""
         , ppSep                 = xmobarColor red "" " | "
-        , ppWsSep               = ""
+        , ppWsSep               = " "
         , ppLayout              = xmobarColor yellow ""
         , ppOrder               = id
         , ppOutput              = hPutStrLn h  

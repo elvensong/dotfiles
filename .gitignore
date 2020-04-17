@@ -2,10 +2,7 @@
 !.xinitrc
 !.list_packages
 !.zshrc
-!.config/cmus/
-!.config/qutebrowser/
 !.config/terminator/
-
 !.rofi/
 !.xmonad/*.hs
 !.xmonad/lib/
