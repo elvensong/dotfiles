@@ -7,6 +7,6 @@
 !.xmonad/*.hs
 !.xmonad/lib/**
 !.xmonad/xmobar.conf
-!.xmonad/icons/**
+!.xmonad/icons/*.xpm
 !.Xmodmap
 !.comptonrc
