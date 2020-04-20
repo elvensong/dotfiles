@@ -6,6 +6,8 @@ export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
 export TERM=terminator
+export BROWSER=qutebrowser
+export EDITOR=vim
 
 # Path to your oh-my-zsh installation.
 export ZSH="/home/eve/.oh-my-zsh"

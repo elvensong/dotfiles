@@ -1,136 +1,4 @@
 {-# LANGUAGE AllowAmbiguousTypes, DeriveDataTypeable, TypeSynonymInstances, MultiParamTypeClasses #-}
----------------------------------------------------------------------------
---                                                                       --
---     _|      _|  _|      _|                                      _|    --
---       _|  _|    _|_|  _|_|    _|_|    _|_|_|      _|_|_|    _|_|_|    --
---         _|      _|  _|  _|  _|    _|  _|    _|  _|    _|  _|    _|    --
---       _|  _|    _|      _|  _|    _|  _|    _|  _|    _|  _|    _|    --
---     _|      _|  _|      _|    _|_|    _|    _|    _|_|_|    _|_|_|    --
---                                                                       --
----------------------------------------------------------------------------
--- Ethan Schoonover <es@ethanschoonover.com> @ethanschoonover            --
--- https://github.com/altercation                                        --
----------------------------------------------------------------------------
--- current as of XMonad 0.12
-
-------------------------------------------------------------------------}}}
--- TODO                                                                 {{{
----------------------------------------------------------------------------
-{-|
-
- GENERAL
- 
- * look into X.H.Scripts -- there are things I want to run at startup, for example
- * X.U.SpawnNamedPipe? xmobars. multiple screens.
- * X.U.WindowState
- * review XMonad.ManageHook https://hackage.haskell.org/package/xmonad-0.12/docs/XMonad-ManageHook.html
- * ? X.A.LinkWorkspaces
- * ? X.A.Search
- * ? X.A.ShowText
- * ? X.A.SimpleDate
- * ? X.A.Warp
- * ? X.A.WindowBringer
- * ? X.A.WorkspaceCursors
- * ? XMonad.Hooks.Minimize / X.H.Minimize or XMonad.Layout.Hidden
- * ? X.L.avoidFloats - tried and couldn't get it to work immediately but seemed interesting
- * XMonad.Hooks.DynamicBars looks useful
-
- NON XMONAD SPECIFIC
-
- * fix unplug events that throw false battery warning
- * fix volume controls
- * switch to urxvt with dynamic font sizing?
- * screen locker
- * audio tweaking ... volume working in all cases? output selected intelligently
- * ssd cloning via btrfs
- * go through sections of https://wiki.archlinux.org/index.php/List_of_applications and identify category selections, adding them to personal wiki
- 
- ACTIVE
-
- * try out XMonad.Layout.Hidden
- * check out https://github.com/paul-axe/dotfiles/blob/master/.xmonad/xmonad.hs for dual xmobar?
- * would be nice to have a couple project spaces that are sys:1 sys:2 etc and related keybindings
- * use toggle float for M-t and make M-S-t sinkAll or toggle float for all
- * Refine bindings. consider greater use of submaps
- * work on helper scripts in general (vol, etc.)
- * xdb / localectl in lieu of xmodmap
- * test hybrid graphics again?
- * power (test tlp again? need way to see if it's doing a whole lot of good, or should I just use manual options... either way nvidia is power hungry)
- * screensaver and screen stuff, caffeine
- * check on avoidmaster for float issues https://wiki.haskell.org/Xmonad/Frequently_asked_questions
- * consider inserting chrome above instead of below on stack
- * either an M-s d style submap for system operations, or top level M4-d M4-s style bindings
- * on project space default action, I'd like to spawn a couple terminals on SYS and group them immediately, then spawn another terminal or browser. how?
-
- DEFER (should do but uncertain how to solve after initial cursory review, so will defer till have more time to research)
-
- * just like toggleWS' from CycleWS, it would be nice to make a custom prev/nextWS' that would skip NSP
- * could make a new set of PerScreen width layouts for "small screens" (1280 and under) (non critical...)
- * look intot X.*.PositionStore* as well as whatever the other method of retaining float pos was
- * quickly swapping two windows between master and slave works nicely. I get a little of this with promote, but I'm
-   sure there is a more comprehensive solution I could implement (cycle windows / recent windows?)
- ! Want to be able to spawn a new window directly into a sublayout, not
-   spawn/merge as I'm doing now (this would be a SIGNIFICANT improvement)
- ! add tab/alt-tab cycling through windows
- * add a shutdown hook to spin down tray/other processes that throw unnecessary errors into xorg
- * add withall to send all windows to different workspace
- * look fully into resizing current layout including vertical on 3Col
- * make focused window master automatically on floating
- * see if there is a way to maintain tiled focus post toggle of scratchpad (cf X.L.TrackFloating)
- * move NSP windows that are tiled into workspace AT END or AS MASTER depending on management
- * https://github.com/pjones/xmonadrc has a focus-follows in the tiled layer only
-   also has some dynamic project helper functions
- * if not using dynamic workspaces (just projects) then remove the dynamic workspaces functions from window shifting
- * consider IfMax for further dynamic layout properties
- * revisit mouse resizing of windows in tiled layouts (nice to have not crit)
- * any utility in XMonad-Hooks-ServerMode (tested briefly, couldn't get it working properly)
- * work on my handling of x selection for utility functions ... timer/delay issue?
-
- DONE 
-
- * DynamicWorkspaces ... will DynamicProjects replace it entirely? Do I not need it
- * keybindings for unmerge are weird... sublayout not great for what might be a common op
-   could do M-u and M-S-u for mergeall
- * capture f11 and pass it along to window, then shift window (or come up with other way to redraw boundaries)
- * set conditional key bindings depending on layout for tabs view
-   (other pseudo-conditional bindings are handled with a trymessage construct)
- * add in full tabbed layout in standard sequence?
- * fix scratchpad float position - more or less ok now
- * test alternate sublayout style in order to explode current view
- * XMonad.Hooks.DynamicProperty - could be used for Chrome windows that pop up
-   if not already assigned a custom class via flags
- * change keybinding for cycling through tabs quickly.... this should be "top level" mod+something
- * would be nice to have fullscreen work the way I had it where I could fit it in a window as desired
- * make a partial full screen that respects struts
- * X.H.InsertPosition ... do I want to use this for different spawn location? can I use
-   it for only certain windows?
- * XMonad-Hooks-ToggleHook
- ! hotplug monitor scripts
- * fix alert styles
- * dealing with screens/workspaces (binding to move/shift to workspace)
- ! XMonad-Actions-Navigation2D has a lot of features I'm not yet using.
-   E.g. screen related
-   Review the documentation and consider adding.
-
- TESTED/REJECTED/WONTFIX
-
- * consider switching to X.L.SimpleFloat + SimpleDecoration for titlebars
- * planekeys? also the new ws project thing i read in change log. also link workspaces
-   RESULT: for now just using projects the prompt to move around ws
- * revisit whether my current use of top level tabbed layout is confusing or best case
-   - does it make sense?
-   - do I actually switch to it a lot? would I?
-   - maybe I could just use Tabs as an orphan layout that I jump to
-   RESULT: i'm ocnvinced the current top level tabs which is always in the
-   layout cycle is, if not optimal, the best I'm going to get for now
-
- * ? X.A.RotSlaves - not much use since I just use nav2D
-
- NON XMONAD SPECIFIC TODO
-
- * check if unclutter is being launched and if the new version is crashing
-
- -}
 
 ------------------------------------------------------------------------}}}
 -- Modules                                                              {{{
@@ -239,33 +107,6 @@ import XMonad.Layout.SimplestFloat
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 
--- taffybar specific
--- import System.Taffybar.Hooks.PagerHints (pagerHints)
--- to demo and comment out or remove
--- import XMonad.Layout.Master -- used to test a dynamic layout. worked, but will remove in lieu of sublayouts
--- import XMonad.Actions.CycleSelectedLayouts -- nice but doesn't work well with sublayouts
--- import XMonad.Actions.Plane
--- import XMonad.Layout.IndependentScreens
--- import XMonad.Util.Timer
--- recent windows from cycle windows -- couldn't get it working on quick try: revisit this
--- import XMonad.Actions.CycleWindows
--- testing -- not a lot of value added, or am I missing something
--- import XMonad.Hooks.Place
-----
--- following for the combocombo test from
--- http://xmonad.org/xmonad-docs/xmonad-contrib/src/XMonad-Config-Droundy.html
--- import XMonad.Layout.Square ( Square(Square) )
--- import XMonad.Layout.BoringWindows
--- import XMonad.Layout.Grid
-----
--- import XMonad.Layout.SimpleDecoration
--- testing -- couldn't get this to work
--- import XMonad.Layout.TrackFloating
--- testing
--- import XMonad.Hooks.ServerMode
--- import XMonad.Actions.Commands 
--- import Control.Concurrent (threadDelay)
-
 ------------------------------------------------------------------------}}}
 -- Main                                                                 {{{
 ---------------------------------------------------------------------------
@@ -310,25 +151,6 @@ myConfig p = def
 -- Workspaces                                                           {{{
 ---------------------------------------------------------------------------
 
--- wsAV    = "AV"
--- wsBSA   = "BSA"
--- wsCOM   = "COM"
--- wsDOM   = "DOM"
--- wsDMO   = "DMO"
--- wsFLOAT = "FLT"
--- wsGEN   = "GEN"
--- wsGCC   = "GCC"
--- wsMON   = "MON"
--- wsOSS   = "OSS"
--- wsRAD   = "RAD"
--- wsRW    = "RW"
--- wsSYS   = "SYS"
--- wsTMP   = "TMP"
--- wsVIX   = "VIX"
--- wsWRK   = "WRK"
--- wsWRK2  = "WRK:2"
--- wsGGC   = "GGC"
-
 wsIDE      = "<fn=1> \61729 </fn>"
 wsBRW      = "<fn=1> \62056 </fn>"
 wsTERM     = "<fn=1> \61728 </fn>"
@@ -371,42 +193,15 @@ projects =
 
 -- | Uses supplied function to decide which action to run depending on current workspace name.
 
---myTerminal          = "terminator"
---myTerminalClass     = "Terminator"
 myTerminal          = "terminator"
 myIDE                 = "eclipse"
 myEditor              = "emacs"
 volumeMute             = "pactl set-sink-mute 0 toggle"
 volumeUp         = "pactl set-sink-volume 0 +1%"
 volumeDown       = "pactl set-sink-volume 0 -1%"
-myAltTerminal       = "cool-retro-term"
-myBrowser           = "qutebrowser" -- chrome with WS profile dirs
-myBrowserClass      = "Google-chrome-beta"
-myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar1.cfg"
---myLauncher          = "dmenu_run"
---myLauncher          = "rofi -matching fuzzy -show run"
+myBrowser           = "qutebrowser"
+myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
 myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
-
-
--- I'm using a custom browser launching script (see myBrowser above) that
--- is workspace aware. It launches an instance of Chrome that is unique
--- on specific workspaces. Thus on "GEN" workspace I use my "normal"
--- browser profile, while on "WRK" I use a different profile. This is
--- roughly equivalent to using Chrome's built in profiles, but has the
--- benefit of launching immediately with the correct profile.
---
--- In addition to this, I use per workspace bindings to toggle Hangouts
--- chat windows and Trello windows based on whether I'm on, for example,
--- my personal or work workspace.
---
--- This is particularly useful for Trello since I can launch a project
--- related Trello "app" instance on a project workspace.
---
--- This system utilizes:
--- * my workspace aware browser script
--- * X.U.NamedScratchPads
--- * bindOn via X.A.PerWorkspaceKeys (NO... now using ConditionalKeys custom module)
--- * bindOn via X.A.ConditionalKeys
 
 myScratchPads =
     [ (NS "cmus" "terminator -e cmus --title=cmus --role=scratchpad" (title =? "cmus") (customFloating $ W.RationalRect l t w h))
@@ -439,7 +234,7 @@ magenta = "#c678dd"
 violet  = "#6c71c4"
 cyan    = "#2aa198"
 green   = "#859900"
-blue    = "#51afef"
+blue    = "#5cb5f0"
 teal    = "#4db5bd"
 lightgrey = "#5b6268"
 fg      = "#bbc2cf"
@@ -496,7 +291,7 @@ myPromptTheme = def
     , fgHLight              = base03
     , bgHLight              = active
     , borderColor           = base03
-    , promptBorderWidth     = 0
+    , promptBorderWidth     = 3
     , height                = prompt
     , position              = Bottom
     }
@@ -515,8 +310,12 @@ hotPromptTheme = myPromptTheme
 
 floatPromptTheme = myPromptTheme
     {
-      height                = prompt
+      height                = 50
     , position              = CenteredAt 0.5 0.5
+    , bgColor               = base0
+    , fgColor               = blue
+    , promptBorderWidth     = 2
+    , borderColor           = blue
     }
 
 myShowWNameTheme = def
@@ -596,14 +395,14 @@ myLayoutHook = showWorkspaceName
     -- Tabs Layout                                                          --
     --------------------------------------------------------------------------
 
-    threeCol = named "Unflexed"
+    threeCol = named "Unflex"
          $ avoidStruts
          $ addTopBar
          $ myGaps
          $ mySpacing
          $ ThreeColMid 1 (1/10) (1/2)
 
-    tabs = named "Tabs"
+    tabs = named "<icon=tabs.xpm/>"
          $ avoidStruts
          $ addTopBar
          $ addTabs shrinkText myTabTheme
@@ -736,7 +535,7 @@ myLayoutHook = showWorkspaceName
 
     -- retained during development: safe to remove later
 
-    flex = trimNamed 5 "Flex"
+    flex = trimNamed 5 ""
               $ avoidStruts
               -- don't forget: even though we are using X.A.Navigation2D
               -- we need windowNavigation for merging to sublayouts
@@ -752,8 +551,8 @@ myLayoutHook = showWorkspaceName
                     ||| (trimSuffixed 1 "Wide BSP" $ hiddenWindows emptyBSP)
                   --  ||| fullTabs
                   standardLayouts = myGaps $ mySpacing
-                      $ (suffixed "Std 2/3" $ ResizableTall 1 (1/20) (2/3) [])
-                    ||| (suffixed "Std 1/2" $ ResizableTall 1 (1/20) (1/2) [])
+                      $ (suffixed "Std <icon=flex23.xpm/>" $ ResizableTall 1 (1/20) (2/3) [])
+                    ||| (suffixed "Std <icon=flex12.xpm/>" $ ResizableTall 1 (1/20) (1/2) [])
 
                   --  ||| fullTabs
                   --fullTabs = suffixed "Tabs Full" $ Simplest
@@ -1147,8 +946,9 @@ myKeys conf = let
     -- System / Utilities
     -----------------------------------------------------------------------
     subKeys "System"
-    [ ("M-q"                    , addName "Restart XMonad"                  $ spawn "xmonad --restart")
+    [ ("M-S-r"                    , addName "Restart XMonad"                  $ restartXmonad)
     , ("M-C-u"                  , addName "Shutdown"                        $ confirmPrompt floatPromptTheme "Shutdown" $ spawn "shutdown -h now")
+    , ("M-C-i"                  , addName "Restart"                         $ confirmPrompt floatPromptTheme "Restart"  $ spawn "reboot")
     , ("M-C-q"                  , addName "Rebuild & restart XMonad"        $ spawn "xmonad --recompile && xmonad --restart")
     , ("M-S-q"                  , addName "Quit XMonad"                     $ confirmPrompt hotPromptTheme "Quit XMonad" $ io (exitWith ExitSuccess))
     , ("M-o"                    , addName "Lock screen"                     $ spawn "xset s activate")
@@ -1161,10 +961,6 @@ myKeys conf = let
     -----------------------------------------------------------------------
     subKeys "Actions"
     [ ("M-a"                    , addName "Notify w current X selection"    $ unsafeWithSelection "notify-send")
-    , ("M-u"                    , addName "Copy current browser URL"        $ spawn "with-url copy")
-    , ("M-o"                    , addName "Display (output) launcher"       $ spawn "displayctl menu")
-    , ("M-<XF86Display>"        , addName "Display - force internal"        $ spawn "displayctl internal")
-    , ("S-<XF86Display>"        , addName "Display - force internal"        $ spawn "displayctl internal")
     , ("M-i"                    , addName "Network (Interface) launcher"    $ spawn "nmcli_dmenu")
     , ("M-/"                    , addName "On-screen keys"                  $ spawn "killall screenkey &>/dev/null || screenkey --no-systray")
     , ("M-S-/"                  , addName "On-screen keys settings"         $ spawn "screenkey --show-settings")
@@ -1202,7 +998,7 @@ myKeys conf = let
 
     subKeys "Windows"
     (
-    [ ("M-<Backspace>"          , addName "Kill"                            kill1)
+    [ ("M-q"          , addName "Kill"                            kill1)
     , ("M-S-<Backspace>"        , addName "Kill all"                        $ confirmPrompt hotPromptTheme "kill all" $ killAll)
     --, ("M-d"                    , addName "Duplicate w to all ws"           $ windows copyToAll)
     --, ("M-S-d"                  , addName "Kill other duplicates"           $ killAllOtherCopies)
@@ -1383,10 +1179,10 @@ myKeys conf = let
     --, ("M4-C-S-,"               , addName "toSubl Expand"               $ toSubl Expand)
     ]
 
-		where
-			toggleCopyToAll = wsContainingCopies >>= \ws -> case ws of
-							[] -> windows copyToAll
-							_ -> killAllOtherCopies
+        where
+            toggleCopyToAll = wsContainingCopies >>= \ws -> case ws of
+                            [] -> windows copyToAll
+                            _ -> killAllOtherCopies
 
     -----------------------------------------------------------------------
     -- Screens
@@ -1446,8 +1242,6 @@ myMouseBindings (XConfig {XMonad.modMask = myModMask}) = M.fromList $
 myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
-    spawn "killall picom xmobar"
-    spawn "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
     spawn "picom &"
     spawn "dunst &"
 
@@ -1474,8 +1268,6 @@ restartXmonad = do
 -- Log                                                                  {{{
 ---------------------------------------------------------------------------
 
-arrowSign = "\57520"
-
 myLogHook h = do
 
     -- following block for copy windows marking
@@ -1489,15 +1281,15 @@ myLogHook h = do
     --dynamicLogWithPP $ defaultPP
     dynamicLogWithPP $ def
 
-        { ppCurrent             = xmobarColor fg "#000000" . wrap "<fc=#ffffff,#000000>" "</fc>"
+        { ppCurrent             = xmobarColor blue "#ffffff"
         , ppTitle               = const ""
         , ppVisible             = xmobarColor base0 base2
         , ppUrgent              = xmobarColor red    "" . wrap " " " "
-        , ppHidden              = xmobarColor base2 base1
-        , ppHiddenNoWindows     = const ""
-        , ppSep                 = xmobarColor red "" " | "
+        , ppHidden              = xmobarColor "#ffffff" ""
+        , ppHiddenNoWindows     = xmobarColor base2 ""
+        , ppSep                 = xmobarColor red "" "  "
         , ppWsSep               = " "
-        , ppLayout              = xmobarColor yellow ""
+        , ppLayout              = xmobarColor "#ffffff" ""
         , ppOrder               = id
         , ppOutput              = hPutStrLn h  
         , ppSort                = fmap 
@@ -1560,7 +1352,6 @@ myManageHook =
             , resource =? "java" -?> doFloat
             , resource =? "pavucontrol" -?> doCenterFloat
             , transience
-            , isBrowserDialog -?> forceCenterFloat
             --, isConsole -?> forceCenterFloat
             , isRole =? gtkFile  -?> forceCenterFloat
             , isDialog -?> doCenterFloat
@@ -1570,7 +1361,6 @@ myManageHook =
             , resource =? "console" -?> tileBelowNoFocus
             , isFullscreen -?> doFullFloat
             , pure True -?> tileBelow ]
-        isBrowserDialog = isDialog <&&> className =? myBrowserClass
         gtkFile = "GtkFileChooserDialog"
         isRole = stringProperty "WM_WINDOW_ROLE"
         -- insert WHERE and focus WHAT

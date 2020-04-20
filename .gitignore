@@ -2,11 +2,11 @@
 !.xinitrc
 !.list_packages
 !.zshrc
-!.config/terminator/
+!.config/terminator/**
 !.rofi/
 !.xmonad/*.hs
-!.xmonad/lib/
+!.xmonad/lib/**
 !.xmonad/xmobar.conf
+!.xmonad/icons/**
 !.Xmodmap
 !.comptonrc
-!.list_packages
