@@ -50,12 +50,14 @@
 ;;
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
-(add-hook! 'java-mode-hook #'lsp)
 
 (add-to-list 'auto-mode-alist
              '("\\.apib$" . apib-mode))
 
-(add-hook 'projectile-after-switch-project-hook #'treemacs)
+(add-hook! java-mode #'lsp)
+(add-hook 'projectile-after-switch-project-hook 'treemacs)
+(after! treemacs
+  (setq treemacs-follow-mode t))
 
 (setq lsp-java-vmargs
             `("-noverify"
