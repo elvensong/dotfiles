@@ -1,4 +1,7 @@
 *
+!.doom.d/
+!.doom.d/**
+!.gitignore
 !.xinitrc
 !.list_packages
 !.zshrc
