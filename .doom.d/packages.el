@@ -50,5 +50,4 @@
 (package! lsp-ui)
 (package! company-lsp)
 (package! lsp-treemacs)
-(package! dap-java)
 (package! yasnippet)

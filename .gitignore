@@ -11,5 +11,4 @@
 !.xmonad/lib/**
 !.xmonad/xmobar.conf
 !.xmonad/icons/*.xpm
-!.Xmodmap
 !.comptonrc

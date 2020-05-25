@@ -153,29 +153,30 @@ myConfig p = def
 
 wsIDE      = "<fn=1> \61729 </fn>"
 wsBRW      = "<fn=1> \62056 </fn>"
-wsTERM     = "<fn=1> \61728 </fn>"
+wsDOC      = "<fn=2> \57994 </fn>"
 wsCHT      = "<fn=2> \64366 </fn>"
-wsDOC      = "<fn=2> \63256 </fn>"
+wsTERM     = "<fn=1> \61728 </fn>"
+wsMDI      = "<fn=2> \61441 </fn>"
 
 -- myWorkspaces = map show [1..9]
-myWorkspaces = [wsIDE, wsBRW, wsTERM, wsCHT, wsDOC]
+myWorkspaces = [wsIDE, wsBRW, wsDOC, wsCHT, wsTERM, wsMDI]
 
 projects :: [Project]
 projects =
 
     [ Project   { projectName       = wsIDE
-                , projectDirectory  = "~/eclipse-workspace/"
-                , projectStartHook  = Just $ do spawn ""
+                , projectDirectory  = "~/"
+                , projectStartHook  = Nothing
                 }
 
     , Project   { projectName       = wsBRW
                 , projectDirectory  = "~/Downloads"
-                , projectStartHook  = Just $ do spawnOn wsBRW myBrowser
+                , projectStartHook  = Just $ spawnOn wsBRW myBrowser
                 }
 
     , Project   { projectName       = wsCHT
                 , projectDirectory  = "~/"
-                , projectStartHook  = Just $ do spawn ""
+                , projectStartHook  = Nothing
 
                 }
 
@@ -185,6 +186,11 @@ projects =
                                                 spawnOn wsTERM "sleep 1"
                                                 spawnOn wsTERM myTerminal
                 }
+
+    , Project   { projectName       = wsMDI
+                , projectDirectory  = "~/"
+                , projectStartHook  = Just $ do spawnOn wsMDI "spotify"
+                }
     ]
 
 ------------------------------------------------------------------------}}}
@@ -193,8 +199,8 @@ projects =
 
 -- | Uses supplied function to decide which action to run depending on current workspace name.
 
-myTerminal          = "terminator"
-myIDE                 = "eclipse"
+myTerminal          = "alacritty"
+myIDE                 = "intellij-idea-ultimate-edition"
 myEditor              = "emacs"
 volumeMute             = "pactl set-sink-mute 0 toggle"
 volumeUp         = "pactl set-sink-volume 0 +1%"
@@ -204,8 +210,8 @@ myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
 myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
 
 myScratchPads =
-    [ (NS "cmus" "terminator -e cmus --title=cmus --role=scratchpad" (title =? "cmus") (customFloating $ W.RationalRect l t w h))
-    , (NS "term" "terminator --title=scratchpad --role=scratchpad"  (title =? "scratchpad") (customFloating $ W.RationalRect l t w h))
+    [ (NS "cmus" (myTerminal ++ " -e cmus -t cmus --class cmus") (title =? "cmus") (customFloating $ W.RationalRect l t w h))
+    , (NS "term" (myTerminal ++ " -t scratchpad --class scratchpad")  (title =? "scratchpad") (customFloating $ W.RationalRect l t w h))
     ]
     where
       h = 0.9
@@ -235,6 +241,7 @@ violet  = "#6c71c4"
 cyan    = "#2aa198"
 green   = "#859900"
 blue    = "#5cb5f0"
+white   = "#ffffff"
 teal    = "#4db5bd"
 lightgrey = "#5b6268"
 fg      = "#bbc2cf"
@@ -981,6 +988,10 @@ myKeys conf = let
     , ("<XF86AudioRaiseVolume>"                   , addName "Volume Up"                         $ spawn volumeUp)
     , ("<XF86AudioLowerVolume>"                   , addName "Volume Down"                         $ spawn volumeDown)
     , ("<XF86AudioMute>"                   , addName "Mute Sound"                         $ spawn volumeMute)
+    , ("<XF86AudioPlay>"                   , addName "Audio Play"                         $ spawn "playerctl play-pause")
+    , ("<XF86AudioStop>"                   , addName "Audio Stop"                         $ spawn "playerctl stop")
+    , ("<XF86AudioNext>"                   , addName "Audio Next"                         $ spawn "playerctl next")
+    , ("<XF86AudioPrev>"                   , addName "Audio Previous"                         $ spawn "playerctl previous")
     , ("M-s s"                  , addName "Cancel submap"                   $ return ())
     , ("M-s M-s"                , addName "Cancel submap"                   $ return ())
     -- Scratchpads
@@ -1281,15 +1292,15 @@ myLogHook h = do
     --dynamicLogWithPP $ defaultPP
     dynamicLogWithPP $ def
 
-        { ppCurrent             = xmobarColor blue "#ffffff"
+        { ppCurrent             = xmobarColor white ""
         , ppTitle               = const ""
-        , ppVisible             = xmobarColor base0 base2
-        , ppUrgent              = xmobarColor red    "" . wrap " " " "
-        , ppHidden              = xmobarColor "#ffffff" ""
+        , ppVisible             = xmobarColor base0 ""
+        , ppUrgent              = xmobarColor red ""
+        , ppHidden              = xmobarColor base2 ""
         , ppHiddenNoWindows     = xmobarColor base2 ""
         , ppSep                 = xmobarColor red "" "  "
         , ppWsSep               = " "
-        , ppLayout              = xmobarColor "#ffffff" ""
+        , ppLayout              = xmobarColor fg ""
         , ppOrder               = id
         , ppOutput              = hPutStrLn h  
         , ppSort                = fmap 
@@ -1301,8 +1312,8 @@ myLogHook h = do
 myFadeHook = composeAll
     [ opaque -- default to opaque
     , isUnfocused --> opacity 0.85
-    , (className =? myTerminal) <&&> (isUnfocused) --> opacity 0.9
-    , (isRole =? "scratchpad") --> opacity 0.8
+    , (className =? "Alacritty") <&&> (isUnfocused) --> opacity 0.9
+    , (className =? "scratchpad") --> opacity 0.8
     , fmap ("Google" `isPrefixOf`) className --> opaque
     , isDialog --> opaque 
     --, isUnfocused --> opacity 0.55
