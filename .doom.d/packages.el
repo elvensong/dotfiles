@@ -51,3 +51,4 @@
 (package! company-lsp)
 (package! lsp-treemacs)
 (package! yasnippet)
+(package! smerge-mode)
