@@ -109,3 +109,5 @@ alias edit="emacs -nw"
 alias la="ls -a"
 alias gs="git status"
 alias cl="clear"
+
+source /home/eve/.config/broot/launcher/bash/br

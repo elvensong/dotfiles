@@ -249,7 +249,7 @@ fg      = "#bbc2cf"
 -- sizes
 gap         = 3
 topbar      = 0
-border      = 2
+border      = 1
 prompt      = 20
 status      = 10
 
@@ -988,10 +988,10 @@ myKeys conf = let
     , ("<XF86AudioRaiseVolume>"                   , addName "Volume Up"                         $ spawn volumeUp)
     , ("<XF86AudioLowerVolume>"                   , addName "Volume Down"                         $ spawn volumeDown)
     , ("<XF86AudioMute>"                   , addName "Mute Sound"                         $ spawn volumeMute)
-    , ("<XF86AudioPlay>"                   , addName "Audio Play"                         $ spawn "playerctl play-pause")
-    , ("<XF86AudioStop>"                   , addName "Audio Stop"                         $ spawn "playerctl stop")
-    , ("<XF86AudioNext>"                   , addName "Audio Next"                         $ spawn "playerctl next")
-    , ("<XF86AudioPrev>"                   , addName "Audio Previous"                         $ spawn "playerctl previous")
+    , ("<XF86AudioNext>"           , addName "Audio Next"                                $ spawn "playerctl next")
+    , ("<XF86AudioPrev>"           , addName "Audio Previous"                                $ spawn "playerctl previous")
+    , ("<XF86AudioPlay>"           , addName "Audio Play"                                $ spawn "playerctl play-pause")
+    , ("<XF86AudioStop>"           , addName "Audio Stop"                                $ spawn "playerctl stop")
     , ("M-s s"                  , addName "Cancel submap"                   $ return ())
     , ("M-s M-s"                , addName "Cancel submap"                   $ return ())
     -- Scratchpads
@@ -1257,6 +1257,7 @@ myStartupHook = do
     spawn "dunst &"
 
     spawnOn wsIDE myEditor
+    setWMName "LG3D"
 
     -- init-tray kills and restarts stalone tray, hence just "spawn" so it
     -- runs on restart and will suffice to reposition tray on display changes
@@ -1362,6 +1363,7 @@ myManageHook =
             , resource =? "vlc"    -?> doFloat
             , resource =? "java" -?> doFloat
             , resource =? "pavucontrol" -?> doCenterFloat
+            , resource =? "jetbrains-idea" -?> doCenterFloat
             , transience
             --, isConsole -?> forceCenterFloat
             , isRole =? gtkFile  -?> forceCenterFloat

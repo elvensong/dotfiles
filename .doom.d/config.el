@@ -59,10 +59,10 @@
 (after! treemacs
   (setq treemacs-follow-mode t))
 
-(setq lsp-java-vmargs
-            `("-noverify"
-              "-Xmx1G"
-              "-XX:+UseG1GC"
-              "-XX:+UseStringDeduplication"
-              ,(concat "-javaagent:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")
-              ,(concat "-Xbootclasspath/a:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")))
+;; (setq lsp-java-vmargs
+;;             `("-noverify"
+;;               "-Xmx1G"
+;;               "-XX:+UseG1GC"
+;;               "-XX:+UseStringDeduplication"
+;;               ,(concat "-javaagent:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")
+;;               ,(concat "-Xbootclasspath/a:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")))
