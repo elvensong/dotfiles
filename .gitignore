@@ -5,7 +5,11 @@
 !.xinitrc
 !.list_packages
 !.zshrc
-!.config/terminator/**
+!.config/
+!.config/alacritty/
+!.config/alacritty/**
+!.config/dunst/
+!.config/dunst/dunstrc
 !.rofi/
 !.xmonad/*.hs
 !.xmonad/lib/**
