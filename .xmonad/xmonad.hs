@@ -202,9 +202,9 @@ projects =
 myTerminal          = "alacritty"
 myIDE                 = "intellij-idea-ultimate-edition"
 myEditor              = "emacs"
-volumeMute             = "pactl set-sink-mute 0 toggle"
-volumeUp         = "pactl set-sink-volume 0 +1%"
-volumeDown       = "pactl set-sink-volume 0 -1%"
+volumeMute             = "pactl set-sink-mute 1 toggle"
+volumeUp         = "pactl set-sink-volume 1 +1%"
+volumeDown       = "pactl set-sink-volume 1 -1%"
 myBrowser           = "qutebrowser"
 myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
 myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
@@ -990,8 +990,12 @@ myKeys conf = let
     , ("<XF86AudioMute>"                   , addName "Mute Sound"                         $ spawn volumeMute)
     , ("<XF86AudioNext>"           , addName "Audio Next"                                $ spawn "playerctl next")
     , ("<XF86AudioPrev>"           , addName "Audio Previous"                                $ spawn "playerctl previous")
-    , ("<XF86AudioPlay>"           , addName "Audio Play"                                $ spawn "playerctl play-pause")
-    , ("<XF86AudioStop>"           , addName "Audio Stop"                                $ spawn "playerctl stop")
+    , ("<XF86AudioPlay>"           , addName "Audio Play"                                $ do
+          spawn "playerctl play-pause"
+          spawn "dunstify -u low 'Audio Play/Pause'")
+    , ("<XF86AudioStop>"           , addName "Audio Stop"                                $ do
+          spawn "playerctl stop"
+          spawn "dunstify -u low 'Audio Stop'")
     , ("M-s s"                  , addName "Cancel submap"                   $ return ())
     , ("M-s M-s"                , addName "Cancel submap"                   $ return ())
     -- Scratchpads
@@ -1313,8 +1317,8 @@ myLogHook h = do
 myFadeHook = composeAll
     [ opaque -- default to opaque
     , isUnfocused --> opacity 0.85
-    , (className =? "Alacritty") <&&> (isUnfocused) --> opacity 0.9
     , (className =? "scratchpad") --> opacity 0.8
+    , (className =? "Alacritty") <&&> (isUnfocused) --> opacity 0.9
     , fmap ("Google" `isPrefixOf`) className --> opaque
     , isDialog --> opaque 
     --, isUnfocused --> opacity 0.55
