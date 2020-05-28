@@ -202,9 +202,9 @@ projects =
 myTerminal          = "alacritty"
 myIDE                 = "intellij-idea-ultimate-edition"
 myEditor              = "emacs"
-volumeMute             = "pactl set-sink-mute 1 toggle"
-volumeUp         = "pactl set-sink-volume 1 +1%"
-volumeDown       = "pactl set-sink-volume 1 -1%"
+volumeMute             = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+volumeUp         = "pactl set-sink-volume @DEFAULT_SINK@ +1%"
+volumeDown       = "pactl set-sink-volume @DEFAULT_SINK@ -1%"
 myBrowser           = "qutebrowser"
 myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
 myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
@@ -1367,6 +1367,8 @@ myManageHook =
             , resource =? "vlc"    -?> doFloat
             , resource =? "java" -?> doFloat
             , resource =? "pavucontrol" -?> doCenterFloat
+            , isInProperty "_NET_WM_WINDOW_TYPE"
+                           "_NET_WM_WINDOW_TYPE_NOTIFICATION" -?> doIgnore
             , resource =? "jetbrains-idea" -?> doCenterFloat
             , transience
             --, isConsole -?> forceCenterFloat
@@ -1380,6 +1382,7 @@ myManageHook =
             , pure True -?> tileBelow ]
         gtkFile = "GtkFileChooserDialog"
         isRole = stringProperty "WM_WINDOW_ROLE"
+        isType = stringProperty "_NET_WM_WINDOW_TYPE"
         -- insert WHERE and focus WHAT
         tileBelow = insertPosition Below Newer
         tileBelowNoFocus = insertPosition Below Older
