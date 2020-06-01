@@ -1257,7 +1257,7 @@ myMouseBindings (XConfig {XMonad.modMask = myModMask}) = M.fromList $
 myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
-    spawn "picom &"
+    spawn "picom -b --config ~/.config/picom.conf"
     spawn "dunst &"
 
     spawnOn wsIDE myEditor
@@ -1369,7 +1369,8 @@ myManageHook =
             , resource =? "pavucontrol" -?> doCenterFloat
             , isInProperty "_NET_WM_WINDOW_TYPE"
                            "_NET_WM_WINDOW_TYPE_NOTIFICATION" -?> doIgnore
-            , resource =? "jetbrains-idea" -?> doCenterFloat
+            , isInProperty "_NET_WM_STATE"
+                           "_NET_WM_STATE_SKIP_TASKBAR" -?> doIgnore
             , transience
             --, isConsole -?> forceCenterFloat
             , isRole =? gtkFile  -?> forceCenterFloat
@@ -1383,6 +1384,7 @@ myManageHook =
         gtkFile = "GtkFileChooserDialog"
         isRole = stringProperty "WM_WINDOW_ROLE"
         isType = stringProperty "_NET_WM_WINDOW_TYPE"
+        isState = stringProperty "_NET_WM_STATE"
         -- insert WHERE and focus WHAT
         tileBelow = insertPosition Below Newer
         tileBelowNoFocus = insertPosition Below Older

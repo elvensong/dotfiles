@@ -6,6 +6,7 @@
 !.list_packages
 !.zshrc
 !.config/
+!.config/picom.conf
 !.config/alacritty/
 !.config/alacritty/**
 !.config/dunst/
