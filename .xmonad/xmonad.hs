@@ -1317,12 +1317,12 @@ myLogHook h = do
 myFadeHook = composeAll
     [ opaque -- default to opaque
     , isUnfocused --> opacity 0.85
-    , (className =? "scratchpad") --> opacity 0.8
+    , (title =? "scratchpad") --> opacity 0.9
     , (className =? "Alacritty") <&&> (isUnfocused) --> opacity 0.9
     , fmap ("Google" `isPrefixOf`) className --> opaque
     , isDialog --> opaque 
     --, isUnfocused --> opacity 0.55
-    --, isFloating  --> opacity 0.75
+    --, isFloating  --> opacity 0.9
     ]
     where
       isRole = stringProperty "WM_WINDOW_ROLE"
