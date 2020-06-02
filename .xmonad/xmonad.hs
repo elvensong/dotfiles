@@ -207,7 +207,7 @@ volumeUp         = "pactl set-sink-volume @DEFAULT_SINK@ +1%"
 volumeDown       = "pactl set-sink-volume @DEFAULT_SINK@ -1%"
 myBrowser           = "qutebrowser"
 myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
-myLauncher          = "rofi -matching fuzzy -modi run,ssh -show run -theme /home/eve/.rofi/my-theme.rasi"
+myLauncher          = "rofi -matching fuzzy -show run -theme /home/eve/.rofi/my-theme.rasi"
 
 myScratchPads =
     [ (NS "cmus" (myTerminal ++ " -e cmus -t cmus --class cmus") (title =? "cmus") (customFloating $ W.RationalRect l t w h))

@@ -4,6 +4,11 @@
  * Copyright: Dean Davidson
  ******************************************************************************/
 
+configuration {
+  modi: "window,run,ssh";
+  show-icons: true;
+}
+
 * {
     /**** Solarized colors ****
     * NOTE: I am including all of them even though I am using a sub-set. I keep
