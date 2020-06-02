@@ -1367,6 +1367,9 @@ myManageHook =
             , resource =? "vlc"    -?> doFloat
             , resource =? "java" -?> doFloat
             , resource =? "pavucontrol" -?> doCenterFloat
+            , resource =? "Android Emulator" -?> doIgnore
+            , isInProperty "_NETWM_NAME"
+                           "Emulator" -?> doIgnore
             , isInProperty "_NET_WM_WINDOW_TYPE"
                            "_NET_WM_WINDOW_TYPE_NOTIFICATION" -?> doIgnore
             , isInProperty "_NET_WM_STATE"

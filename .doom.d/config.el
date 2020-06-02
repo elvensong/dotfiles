@@ -55,9 +55,19 @@
              '("\\.apib$" . apib-mode))
 
 (add-hook! java-mode #'lsp)
-(add-hook 'projectile-after-switch-project-hook 'treemacs)
-(after! treemacs
-  (setq treemacs-follow-mode t))
+
+
+(require 'treemacs)
+(require 'treemacs-scope)
+(defun treemacs-show-if-hide()
+  (interactive)
+  (pcase (treemacs-current-visibility)
+    ('none (treemacs--init))
+    ('exists (treemacs-select-window))
+    ('visible ())))
+
+(add-hook 'projectile-after-switch-project-hook 'treemacs-show-if-hide)
+  (setq treemacs-follow-after-init t)
 
 ;; (setq lsp-java-vmargs
 ;;             `("-noverify"
@@ -66,3 +76,5 @@
 ;;               "-XX:+UseStringDeduplication"
 ;;               ,(concat "-javaagent:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")
 ;;               ,(concat "-Xbootclasspath/a:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")))
+(after! pdf-view
+  (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
