@@ -151,24 +151,30 @@ myConfig p = def
 -- Workspaces                                                           {{{
 ---------------------------------------------------------------------------
 
-wsIDE      = "<fn=1> \61729 </fn>"
-wsBRW      = "<fn=1> \62056 </fn>"
-wsDOC      = "<fn=2> \57994 </fn>"
-wsCHT      = "<fn=2> \64366 </fn>"
-wsTERM     = "<fn=1> \61728 </fn>"
-wsMDI      = "<fn=2> \61441 </fn>"
+wsIDE      = "<fc=#da8548><fn=1> \61729 </fn></fc>"
+wsEMACS    = "<fc=#a6e6ad><fn=2> \63080 </fn></fc>"
+wsBRW      = "<fc=#9da4f8><fn=1> \62056 </fn></fc>"
+wsDOC      = "<fc=#a6e6ad><fn=2> \57994 </fn></fc>"
+wsCHT      = "<fc=#6abdc7><fn=2> \64366 </fn></fc>"
+wsTERM     = "<fc=#c1747e><fn=1> \61728 </fn></fc>"
+wsMDI      = "<fc=#cfa379><fn=2> \61441 </fn></fc>"
 
 -- myWorkspaces = map show [1..9]
-myWorkspaces = [wsIDE, wsBRW, wsDOC, wsCHT, wsTERM, wsMDI]
+myWorkspaces = [wsIDE, wsEMACS, wsBRW, wsDOC, wsCHT, wsTERM, wsMDI]
 
 projects :: [Project]
 projects =
 
     [ Project   { projectName       = wsIDE
                 , projectDirectory  = "~/"
+                , projectStartHook  = Just $ do spawnOn wsIDE myIDE
+                }
+     
+    , Project   { projectName       = wsEMACS
+                , projectDirectory  = "~/"
                 , projectStartHook  = Nothing
                 }
-
+     
     , Project   { projectName       = wsBRW
                 , projectDirectory  = "~/Downloads"
                 , projectStartHook  = Just $ spawnOn wsBRW myBrowser
@@ -245,9 +251,10 @@ white   = "#ffffff"
 teal    = "#4db5bd"
 lightgrey = "#5b6268"
 fg      = "#bbc2cf"
+picton_blue = "#51afef"
 
 -- sizes
-gap         = 3
+gap         = 5
 topbar      = 0
 border      = 1
 prompt      = 20
@@ -954,12 +961,12 @@ myKeys conf = let
     -----------------------------------------------------------------------
     subKeys "System"
     [ ("M-S-r"                    , addName "Restart XMonad"                  $ restartXmonad)
+    , ("M-C-r"                  , addName "Rebuild & Restart XMonad"        $ rebuildXmonad)
     , ("M-C-u"                  , addName "Shutdown"                        $ confirmPrompt floatPromptTheme "Shutdown" $ spawn "shutdown -h now")
     , ("M-C-i"                  , addName "Restart"                         $ confirmPrompt floatPromptTheme "Restart"  $ spawn "reboot")
-    , ("M-C-q"                  , addName "Rebuild & restart XMonad"        $ spawn "xmonad --recompile && xmonad --restart")
     , ("M-S-q"                  , addName "Quit XMonad"                     $ confirmPrompt hotPromptTheme "Quit XMonad" $ io (exitWith ExitSuccess))
     , ("M-o"                    , addName "Lock screen"                     $ spawn "xset s activate")
-    , ("M-<F4>"                    , addName "Print Screen"                    $ return ())
+    , ("M-<F4>"                 , addName "Print Screen"                    $ return ())
   , ("M-F1"                   , addName "Show Keybindings"                $ return ())
     ] ^++^
 
@@ -971,8 +978,8 @@ myKeys conf = let
     , ("M-i"                    , addName "Network (Interface) launcher"    $ spawn "nmcli_dmenu")
     , ("M-/"                    , addName "On-screen keys"                  $ spawn "killall screenkey &>/dev/null || screenkey --no-systray")
     , ("M-S-/"                  , addName "On-screen keys settings"         $ spawn "screenkey --show-settings")
-    , ("M1-p"                   , addName "Capture screen"                  $ spawn "screenshot" )
-    , ("M1-S-p"                 , addName "Capture screen - area select"    $ spawn "screenshot area" )
+    , ("M-<Print>"                , addName "Capture screen"                  $ spawn "scrot" )
+    , ("<Print>"                , addName "Capture screen - area select"    $ spawn "scrot -sf -e 'mv $f ~/screenshots/'" )
     , ("M1-r"                   , addName "Record screen"                   $ spawn "screencast" )
     , ("M1-S-r"                 , addName "Record screen - area select"     $ spawn "screencast area" )
     ] ^++^
@@ -1258,7 +1265,9 @@ myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
     spawn "picom -b --config ~/.config/picom.conf"
+    spawn "xrandr --output DP-0 --off --output DP-1 --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-2 --off --output DP-3 --off --output HDMI-0 --mode 1920x1080 --pos 0x0 --rotate normal"
     spawn "dunst &"
+    spawn "ibus-daemon -drx"
 
     spawnOn wsIDE myEditor
     setWMName "LG3D"
@@ -1297,14 +1306,14 @@ myLogHook h = do
     --dynamicLogWithPP $ defaultPP
     dynamicLogWithPP $ def
 
-        { ppCurrent             = xmobarColor white ""
+        { ppCurrent             = wrap "<box type=Bottom color=#51afef width=3>" "</box>"
         , ppTitle               = const ""
         , ppVisible             = xmobarColor base0 ""
         , ppUrgent              = xmobarColor red ""
         , ppHidden              = xmobarColor base2 ""
         , ppHiddenNoWindows     = xmobarColor base2 ""
         , ppSep                 = xmobarColor red "" "  "
-        , ppWsSep               = " "
+        , ppWsSep               = "  "
         , ppLayout              = xmobarColor fg ""
         , ppOrder               = id
         , ppOutput              = hPutStrLn h  
@@ -1363,22 +1372,21 @@ myManageHook =
     where
         manageSpecific = composeOne
             [ resource =? "desktop_window" -?> doIgnore
+            , isType   =? "_NET_WM_WINDOW_TYPE_DIALOG" -?> doIgnore
             , resource =? "stalonetray"    -?> doIgnore
             , resource =? "vlc"    -?> doFloat
-            , resource =? "java" -?> doFloat
+            , resource =? "java" -?> doIgnore
             , resource =? "pavucontrol" -?> doCenterFloat
             , resource =? "Android Emulator" -?> doIgnore
             , isInProperty "_NETWM_NAME"
                            "Emulator" -?> doIgnore
             , isInProperty "_NET_WM_WINDOW_TYPE"
                            "_NET_WM_WINDOW_TYPE_NOTIFICATION" -?> doIgnore
-            , isInProperty "_NET_WM_STATE"
-                           "_NET_WM_STATE_SKIP_TASKBAR" -?> doIgnore
             , transience
             --, isConsole -?> forceCenterFloat
             , isRole =? gtkFile  -?> forceCenterFloat
-            , isDialog -?> doCenterFloat
             , isRole =? "pop-up" -?> doCenterFloat
+            , isState =? "_NET_WM_STATE_SKIP_TASKBAR" -?> doIgnore
             , isInProperty "_NET_WM_WINDOW_TYPE"
                            "_NET_WM_WINDOW_TYPE_SPLASH" -?> doCenterFloat
             , resource =? "console" -?> tileBelowNoFocus

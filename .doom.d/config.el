@@ -28,11 +28,24 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/Documents/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
+
+(setq tab-width 4)
+
+(setq custom-tab-width 4)
+
+(defun disable-tabs ()
+  (setq indent-tabs-mode nil)
+  (setq tab-width custom-tab-width))
+(defun enable-tabs ()
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  (setq indent-tabs-mode t)
+  (setq tab-width custom-tab-width))
+
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -67,7 +80,7 @@
     ('visible ())))
 
 (add-hook 'projectile-after-switch-project-hook 'treemacs-show-if-hide)
-  (setq treemacs-follow-after-init t)
+(setq treemacs-follow-after-init t)
 
 ;; (setq lsp-java-vmargs
 ;;             `("-noverify"
@@ -78,3 +91,5 @@
 ;;               ,(concat "-Xbootclasspath/a:" "/home/eve/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar")))
 (after! pdf-view
   (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
+
+(add-hook 'prog-mode-hook 'enable-tabs)
