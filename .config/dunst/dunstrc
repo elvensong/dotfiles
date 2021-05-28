@@ -294,6 +294,17 @@
     foreground = "#ffffff"
     frame_color = "#ff0000"
     timeout = 0
+[teams]
+    summary = *Microsoft Teams*
+    urgency = critical
+[dunstify]
+    appname = dunstify
+    format = "<b>%s</b>\n<span foreground='#3f444a'>%b</span>"
+
+[notify-send]
+    appname = notify-send
+    format = "<b>%s</b>\n<span foreground='#3f444a'>%b</span>"
+
     # Icon for notifications with critical urgency, uncomment to enable
     #icon = /path/to/icon
 
