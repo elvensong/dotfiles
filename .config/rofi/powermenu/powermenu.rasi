@@ -1,0 +1,18 @@
+window {
+  width:    185px;
+  location: northeast;
+  x-offset: -5px;
+  padding:  10px;
+  children: [ listview ];
+  y-offset:		      35px;
+}
+
+listview {
+  layout:   vertical;
+  lines:    5;
+  columns:  1;
+}
+
+element {
+  padding:  4px 12px;
+}

@@ -5,8 +5,11 @@
  ******************************************************************************/
 
 configuration {
-  modi: "window,run,ssh";
+  modi: "window,drun,ssh";
   show-icons: true;
+  icon-theme: "Papirus";
+  drun-display-format: "{name}";
+  display-drun: "";
 }
 
 * {
@@ -28,6 +31,7 @@ configuration {
     magenta: #d33682;
     violet: #6c71c4;
     blue: #268bd2;
+	picton-blue: #51afef;
     cyan: #2aa198;
     green: #859900;
 
@@ -36,7 +40,7 @@ configuration {
 
     /* Solarized Darker Theme */
     transparent-background: rgba ( 0, 0, 0, 0 % );
-    foreground:                  @blue;
+    foreground:                  @picton-blue;
     background:                  @grey;
 
     normal-foreground:           @foreground;
@@ -69,7 +73,10 @@ configuration {
 }
 window {
     background-color: @background;
+	width: 25%;
+	height: 40%;
     border:           1;
+	border-radius: 8px;
     padding:          20;
 }
 mainbox {
@@ -86,16 +93,23 @@ textbox {
 }
 listview {
     fixed-height: 0;
-    border:       1px dash 0px 0px ;
-    border-color: @separatorcolor;
     spacing:      2px ;
     scrollbar:    false;
     padding:      8px 0px 0px 0px;
 }
 element {
+    spacing: 4px;
     border:  0;
-    padding: 1px 0px 1px 1px;
+    padding: 4px 0;
+    margin: 4px;
 }
+
+element-text {
+    expand:             true;
+    vertical-align:     0.5;
+    margin:             0 16px;
+}
+
 element normal.normal {
     background-color: @normal-background;
     text-color:       @normal-foreground;
@@ -109,8 +123,10 @@ element normal.active {
     text-color:       @active-foreground;
 }
 element selected.normal {
-    background-color: @selected-normal-background;
-    text-color:       @selected-normal-foreground;
+    background-color: @foreground;
+    border: 0% 0% 0% 0%;
+    border-radius: 10px;
+    text-color:       @background;
 }
 element selected.urgent {
     background-color: @selected-urgent-background;
@@ -132,6 +148,12 @@ element alternate.active {
     background-color: @alternate-active-background;
     text-color:       @alternate-active-foreground;
 }
+
+element-icon {
+  size: 24px;
+  padding: 0 0 0 16px;
+}
+
 scrollbar {
     width:        4px ;
     border:       0;
@@ -146,11 +168,15 @@ button selected {
     background-color: @selected-normal-background;
     text-color:       @selected-normal-foreground;
 }
+
 inputbar {
     spacing:   5px;
     text-color: @normal-foreground;
-    padding:    1px ;
+    padding: 6px;
+    border: 2px;
+	border-radius: 20px;
 }
+
 case-indicator {
     spacing:    0;
     text-color: @normal-foreground;

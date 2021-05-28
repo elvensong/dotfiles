@@ -16,4 +16,7 @@
 !.xmonad/lib/**
 !.xmonad/xmobar.conf
 !.xmonad/icons/*.xpm
-!.comptonrc
+!.config/picom.conf
+!.config/rofi
+!.config/rofi/**
+!.config/betterlockscreenrc

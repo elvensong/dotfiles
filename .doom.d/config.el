@@ -93,3 +93,6 @@
   (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
 
 (add-hook 'prog-mode-hook 'enable-tabs)
+
+(add-hook 'lisp-interaction-mode-hook
+ (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))

@@ -4,7 +4,7 @@
 -- Modules                                                              {{{
 ---------------------------------------------------------------------------
 --import Control.Monad (liftM2)             -- myManageHookShift
-import Control.Monad (liftM, liftM2, join)  -- myManageHookShift
+import Control.Monad (liftM, liftM2, join, (>=>))  -- myManageHookShift
 import Data.List
 import qualified Data.Map as M
 import Data.Monoid
@@ -167,7 +167,7 @@ projects =
 
     [ Project   { projectName       = wsIDE
                 , projectDirectory  = "~/"
-                , projectStartHook  = Just $ do spawnOn wsIDE myIDE
+                , projectStartHook  = Nothing
                 }
      
     , Project   { projectName       = wsEMACS
@@ -177,7 +177,7 @@ projects =
      
     , Project   { projectName       = wsBRW
                 , projectDirectory  = "~/Downloads"
-                , projectStartHook  = Just $ spawnOn wsBRW myBrowser
+                , projectStartHook  = Nothing
                 }
 
     , Project   { projectName       = wsCHT
@@ -195,7 +195,7 @@ projects =
 
     , Project   { projectName       = wsMDI
                 , projectDirectory  = "~/"
-                , projectStartHook  = Just $ do spawnOn wsMDI "spotify"
+                , projectStartHook  = Nothing
                 }
     ]
 
@@ -213,15 +213,15 @@ volumeUp         = "pactl set-sink-volume @DEFAULT_SINK@ +1%"
 volumeDown       = "pactl set-sink-volume @DEFAULT_SINK@ -1%"
 myBrowser           = "qutebrowser"
 myStatusBar         = "xmobar -x0 /home/eve/.xmonad/xmobar.conf"
-myLauncher          = "rofi -matching fuzzy -show run -theme /home/eve/.rofi/my-theme.rasi"
+myLauncher          = "rofi -matching fuzzy -show drun -theme /home/eve/.config/rofi/my-theme.rasi -icon-theme 'Papirus' -show-icons"
 
 myScratchPads =
     [ (NS "cmus" (myTerminal ++ " -e cmus -t cmus --class cmus") (title =? "cmus") (customFloating $ W.RationalRect l t w h))
     , (NS "term" (myTerminal ++ " -t scratchpad --class scratchpad")  (title =? "scratchpad") (customFloating $ W.RationalRect l t w h))
     ]
     where
-      h = 0.9
-      w = 0.9
+      h = 0.5
+      w = 0.5
       t = 0.95 - h
       l = 0.95 - w
 ------------------------------------------------------------------------}}}
@@ -921,15 +921,17 @@ myToggle = windows $ W.view =<< W.tag . head . filter
 myKeys conf = let
 
     subKeys str ks = subtitle str : mkNamedKeymap conf ks
-    screenKeys     = ["w","v","z"]
+    screenKeys     = ["w","e","r"]
     dirKeys        = ["j","k","h","l"]
     arrowKeys        = ["<Down>","<Up>","<Left>","<Right>"]
     dirs           = [ D,  U,  L,  R ]
 
-    --screenAction f        = screenWorkspace >=> flip whenJust (windows . f)
+    screenAction f = screenWorkspace >=> flip whenJust (windows . f)
 
     zipM  m nm ks as f = zipWith (\k d -> (m ++ k, addName nm $ f d)) ks as
     zipM' m nm ks as f b = zipWith (\k d -> (m ++ k, addName nm $ f d b)) ks as
+    zipMod nm ks as m f = zipWith (\k d -> (m ++ k, addName nm $ f d)) ks as
+    zipMod' nm ks as m f b = zipWith (\k d -> (m ++ k, addName nm $ f d b)) ks as
 
     -- from xmonad.layout.sublayouts
     focusMaster' st = let (f:fs) = W.integrate st
@@ -965,7 +967,7 @@ myKeys conf = let
     , ("M-C-u"                  , addName "Shutdown"                        $ confirmPrompt floatPromptTheme "Shutdown" $ spawn "shutdown -h now")
     , ("M-C-i"                  , addName "Restart"                         $ confirmPrompt floatPromptTheme "Restart"  $ spawn "reboot")
     , ("M-S-q"                  , addName "Quit XMonad"                     $ confirmPrompt hotPromptTheme "Quit XMonad" $ io (exitWith ExitSuccess))
-    , ("M-o"                    , addName "Lock screen"                     $ spawn "xset s activate")
+    , ("M-o"                    , addName "Lock screen"                     $ spawn "betterlockscreen -l blur -t 'Get off my machine !!'")
     , ("M-<F4>"                 , addName "Print Screen"                    $ return ())
   , ("M-F1"                   , addName "Show Keybindings"                $ return ())
     ] ^++^
@@ -1069,8 +1071,6 @@ myKeys conf = let
     , ("M-S-w"                  , addName "Shift to Project"            $ shiftToProjectPrompt warmPromptTheme)
     , ("M-<Escape>"             , addName "Next non-empty workspace"    $ nextNonEmptyWS)
     , ("M-S-<Escape>"           , addName "Prev non-empty workspace"    $ prevNonEmptyWS)
-    , ("M-`"                    , addName "Next non-empty workspace"    $ nextNonEmptyWS)
-    , ("M-S-`"                  , addName "Prev non-empty workspace"    $ prevNonEmptyWS)
     , ("M-a"                    , addName "Toggle last workspace"       $ toggleWS' ["NSP"])
     ]
     ++ zipM "M-"                "View      ws"                          wsKeys [0..] (withNthWorkspace W.greedyView)
@@ -1099,8 +1099,8 @@ myKeys conf = let
     , ("M-,"                    , addName "Decrease master windows"         $ sendMessage (IncMasterN (-1)))
     , ("M-."                    , addName "Increase master windows"         $ sendMessage (IncMasterN 1))
 
-    , ("M-r"                    , addName "Reflect/Rotate"              $ tryMsgR (Rotate) (XMonad.Layout.MultiToggle.Toggle REFLECTX))
-    , ("M-S-r"                  , addName "Force Reflect (even on BSP)" $ sendMessage (XMonad.Layout.MultiToggle.Toggle REFLECTX))
+    -- , ("M-r"                    , addName "Reflect/Rotate"              $ tryMsgR (Rotate) (XMonad.Layout.MultiToggle.Toggle REFLECTX))
+    -- , ("M-S-r"                  , addName "Force Reflect (even on BSP)" $ sendMessage (XMonad.Layout.MultiToggle.Toggle REFLECTX))
 
 
     -- If following is run on a floating window, the sequence first tiles it.
@@ -1119,6 +1119,17 @@ myKeys conf = let
     , ("C-S-k"                  , addName "Ctrl-k passthrough"          $ P.sendKey controlMask xK_k)
     , ("C-S-l"                  , addName "Ctrl-l passthrough"          $ P.sendKey controlMask xK_l)
     ] ^++^
+
+    
+    subKeys "Screens"
+    ([("M-C-<Right>", addName "Focus prev screen" prevScreen)
+    , ("M-C-<Left>" , addName "Focus next screen" nextScreen)
+    ]
+    ++ zipMod "Focus screen"                         screenKeys [0..] "M-"    (screenAction W.view)
+    ++ zipMod "Move client to screen"                screenKeys [0..] "M-S-"  (screenAction W.shift)
+    ++ zipMod "Swap workspace with screen"           screenKeys [0..] "M-M1-" (screenAction W.greedyView)
+    ++ zipMod "Swap workspace with and focus screen" screenKeys [0..] "M-C-"  (\s -> screenAction W.greedyView s >> screenAction W.view s)
+    )
 
     -----------------------------------------------------------------------
     -- Reference
@@ -1145,84 +1156,83 @@ myKeys conf = let
     -- Resizing
     -----------------------------------------------------------------------
 
-    subKeys "Resize"
+--     subKeys "Resize"
 
-    [
+--     [
 
-    -- following is a hacky hack hack
-    --
-    -- I want to be able to use the same resize bindings on both BinarySpacePartition and other
-    -- less sophisticated layouts. BSP handles resizing in four directions (amazing!) but other
-    -- layouts have less refined tastes and we're lucky if they just resize the master on a single
-    -- axis.
-    --
-    -- To this end, I am using X.A.MessageFeedback to test for success on using the BSP resizing
-    -- and, if it fails, defaulting to the standard (or the X.L.ResizableTile Mirror variants)
-    -- Expand and Shrink commands.X
-    --
-    -- The "sequence_" wrapper is needed because for some reason the windows weren't resizing till
-    -- I moved to a different window or refreshed, so I added that here. Shrug.
+--     -- following is a hacky hack hack
+--     --
+--     -- I want to be able to use the same resize bindings on both BinarySpacePartition and other
+--     -- less sophisticated layouts. BSP handles resizing in four directions (amazing!) but other
+--     -- layouts have less refined tastes and we're lucky if they just resize the master on a single
+--     -- axis.
+--     --
+--     -- To this end, I am using X.A.MessageFeedback to test for success on using the BSP resizing
+--     -- and, if it fails, defaulting to the standard (or the X.L.ResizableTile Mirror variants)
+--     -- Expand and Shrink commands.X
+--     --
+--     -- The "sequence_" wrapper is needed because for some reason the windows weren't resizing till
+--     -- I moved to a different window or refreshed, so I added that here. Shrug.
     
-    -- mnemonic: less than / greater than
-    --, ("M4-<L>"       , addName "Expand (L on BSP)"     $ sequence_ [(tryMessage_ (ExpandTowards L) (Expand)), refresh])
+--     -- mnemonic: less than / greater than
+--     --, ("M4-<L>"       , addName "Expand (L on BSP)"     $ sequence_ [(tryMessage_ (ExpandTowards L) (Expand)), refresh])
 
-      ("M-<Left>"                  , addName "Expand (L on BSP)"           $ tryMsgR (ExpandTowards L) (Shrink))
-    , ("M-<Right>"                  , addName "Expand (R on BSP)"           $ tryMsgR (ExpandTowards R) (Expand))
-    , ("M-<Up>"                  , addName "Expand (U on BSP)"           $ tryMsgR (ExpandTowards U) (MirrorShrink))
-    , ("M-<Down>"                  , addName "Expand (D on BSP)"           $ tryMsgR (ExpandTowards D) (MirrorExpand))
+--       ("M-<Left>"                  , addName "Expand (L on BSP)"           $ tryMsgR (ExpandTowards L) (Shrink))
+--     , ("M-<Right>"                  , addName "Expand (R on BSP)"           $ tryMsgR (ExpandTowards R) (Expand))
+--     , ("M-<Up>"                  , addName "Expand (U on BSP)"           $ tryMsgR (ExpandTowards U) (MirrorShrink))
+--     , ("M-<Down>"                  , addName "Expand (D on BSP)"           $ tryMsgR (ExpandTowards D) (MirrorExpand))
 
-    , ("M-C-<Left>"                , addName "Shrink (L on BSP)"           $ tryMsgR (ShrinkFrom R) (Shrink))
-    , ("M-C-<Right>"                , addName "Shrink (R on BSP)"           $ tryMsgR (ShrinkFrom L) (Expand))
-    , ("M-C-<Up>"                , addName "Shrink (U on BSP)"           $ tryMsgR (ShrinkFrom D) (MirrorShrink))
-    , ("M-S-<Down>"                , addName "Shrink (D on BSP)"           $ tryMsgR (ShrinkFrom U) (MirrorExpand))
+--     , ("M-C-<Left>"                , addName "Shrink (L on BSP)"           $ tryMsgR (ShrinkFrom R) (Shrink))
+--     , ("M-C-<Right>"                , addName "Shrink (R on BSP)"           $ tryMsgR (ShrinkFrom L) (Expand))
+--     , ("M-C-<Up>"                , addName "Shrink (U on BSP)"           $ tryMsgR (ShrinkFrom D) (MirrorShrink))
+--     , ("M-S-<Down>"                , addName "Shrink (D on BSP)"           $ tryMsgR (ShrinkFrom U) (MirrorExpand))
 
---      ("M-["                    , addName "Expand (L on BSP)"           $ tryMsgR (ExpandTowards L) (Shrink))
---    , ("M-]"                    , addName "Expand (R on BSP)"           $ tryMsgR (ExpandTowards R) (Expand))
---    , ("M-S-["                  , addName "Expand (U on BSP)"           $ tryMsgR (ExpandTowards U) (MirrorShrink))
---    , ("M-S-]"                  , addName "Expand (D on BSP)"           $ tryMsgR (ExpandTowards D) (MirrorExpand))
+-- --      ("M-["                    , addName "Expand (L on BSP)"           $ tryMsgR (ExpandTowards L) (Shrink))
+-- --    , ("M-]"                    , addName "Expand (R on BSP)"           $ tryMsgR (ExpandTowards R) (Expand))
+-- --    , ("M-S-["                  , addName "Expand (U on BSP)"           $ tryMsgR (ExpandTowards U) (MirrorShrink))
+-- --    , ("M-S-]"                  , addName "Expand (D on BSP)"           $ tryMsgR (ExpandTowards D) (MirrorExpand))
 
---    , ("M-C-["                  , addName "Shrink (L on BSP)"           $ tryMsgR (ShrinkFrom R) (Shrink))
---    , ("M-C-]"                  , addName "Shrink (R on BSP)"           $ tryMsgR (ShrinkFrom L) (Expand))
---    , ("M-C-S-["                , addName "Shrink (U on BSP)"           $ tryMsgR (ShrinkFrom D) (MirrorShrink))
---    , ("M-C-S-]"                , addName "Shrink (D on BSP)"           $ tryMsgR (ShrinkFrom U) (MirrorExpand))
+-- --    , ("M-C-["                  , addName "Shrink (L on BSP)"           $ tryMsgR (ShrinkFrom R) (Shrink))
+-- --    , ("M-C-]"                  , addName "Shrink (R on BSP)"           $ tryMsgR (ShrinkFrom L) (Expand))
+-- --    , ("M-C-S-["                , addName "Shrink (U on BSP)"           $ tryMsgR (ShrinkFrom D) (MirrorShrink))
+-- --    , ("M-C-S-]"                , addName "Shrink (D on BSP)"           $ tryMsgR (ShrinkFrom U) (MirrorExpand))
 
-  --, ("M-r"                    , addName "Mirror (BSP rotate)"         $ tryMsgR (Rotate) (XMonad.Layout.MultiToggle.Toggle MIRROR))
-  --, ("M-S-C-m"                , addName "Mirror (always)"             $ sendMessage $ XMonad.Layout.MultiToggle.Toggle MIRROR)
-  --, ("M4-r"                   , addName "BSP Rotate"                  $ sendMessage Rotate)
+--   --, ("M-r"                    , addName "Mirror (BSP rotate)"         $ tryMsgR (Rotate) (XMonad.Layout.MultiToggle.Toggle MIRROR))
+--   --, ("M-S-C-m"                , addName "Mirror (always)"             $ sendMessage $ XMonad.Layout.MultiToggle.Toggle MIRROR)
+--   --, ("M4-r"                   , addName "BSP Rotate"                  $ sendMessage Rotate)
 
--- TODO: the following are potentially useful but I won't know till I work with BSP further
---    , ("M4-s"                   , addName "BSP Swap"                    $ sendMessage XMonad.Layout.BinarySpacePartition.Swap)
---    , ("M4-p"                   , addName "BSP Focus Parent"            $ sendMessage FocusParent)
---    , ("M4-n"                   , addName "BSP Select Node"             $ sendMessage SelectNode)
-    --, ("M4-m"                   , addName "BSP Move Node"               $ sendMessage MoveNode)
+-- -- TODO: the following are potentially useful but I won't know till I work with BSP further
+-- --    , ("M4-s"                   , addName "BSP Swap"                    $ sendMessage XMonad.Layout.BinarySpacePartition.Swap)
+-- --    , ("M4-p"                   , addName "BSP Focus Parent"            $ sendMessage FocusParent)
+-- --    , ("M4-n"                   , addName "BSP Select Node"             $ sendMessage SelectNode)
+--     --, ("M4-m"                   , addName "BSP Move Node"               $ sendMessage MoveNode)
 
-    -- sublayout specific (unused)
-    --  ("M4-C-S-."               , addName "toSubl Shrink"               $ toSubl Shrink)
-    --, ("M4-C-S-,"               , addName "toSubl Expand"               $ toSubl Expand)
-    ]
-
-        where
-            toggleCopyToAll = wsContainingCopies >>= \ws -> case ws of
-                            [] -> windows copyToAll
-                            _ -> killAllOtherCopies
+--     -- sublayout specific (unused)
+--     --  ("M4-C-S-."               , addName "toSubl Shrink"               $ toSubl Shrink)
+--     --, ("M4-C-S-,"               , addName "toSubl Expand"               $ toSubl Expand)
+--     ] where
+--             toggleCopyToAll = wsContainingCopies >>= \ws -> case ws of
+--                             [] -> windows copyToAll
+--                             _ -> killAllOtherCopies
 
     -----------------------------------------------------------------------
     -- Screens
     -----------------------------------------------------------------------
---    subKeys "Screens"
---    ([("M-C-<Right>", addName "Focus prev screen" prevScreen)
---    , ("M-C-<Left>" , addName "Focus next screen" nextScreen)
---    ]
---    ++ zipMod "Focus screen"                         screenKeys [0..] "M-"    (screenAction W.view)
---    ++ zipMod "Move client to screen"                screenKeys [0..] "M-S-"  (screenAction W.shift)
---    ++ zipMod "Swap workspace with screen"           screenKeys [0..] "M-M1-" (screenAction W.greedyView)
---    ++ zipMod "Swap workspace with and focus screen" screenKeys [0..] "M-C-"  (\s -> screenAction W.greedyView s >> screenAction W.view s)
---    ) ^++^
+   -- subKeys "Screens"
+   -- ([("M-C-<Right>", addName "Focus prev screen" prevScreen)
+   -- , ("M-C-<Left>" , addName "Focus next screen" nextScreen)
+   -- ]
+   -- ++ zipMod "Focus screen"                         screenKeys [0..] "M-"    (screenAction W.view)
+   -- ++ zipMod "Move client to screen"                screenKeys [0..] "M-S-"  (screenAction W.shift)
+   -- ++ zipMod "Swap workspace with screen"           screenKeys [0..] "M-M1-" (screenAction W.greedyView)
+   -- ++ zipMod "Swap workspace with and focus screen" screenKeys [0..] "M-C-"  (\s -> screenAction W.greedyView s >> screenAction W.view s)
+   -- ) ^++^
 
---    subKeys "Media Controls"
---    [
---    ("<XF86AudioMicMute>"      , addName "Mic Mute"                    $ spawn "notify-send mic mute")
---    ]    
+   -- subKeys "Media Controls"
+   -- [
+   -- ("<XF86AudioMicMute>"      , addName "Mic Mute"                    $ spawn "notify-send mic mute")
+   -- ]  
+  
 
 -- Mouse bindings: default actions bound to mouse events
 -- Includes window snapping on move/resize using X.A.FloatSnap
@@ -1264,12 +1274,12 @@ myMouseBindings (XConfig {XMonad.modMask = myModMask}) = M.fromList $
 myStartupHook = do
 
     -- init-tilingwm sets up all major "desktop environment" like components
+    spawn "sh ~/.fehbg"
     spawn "picom -b --config ~/.config/picom.conf"
     spawn "xrandr --output DP-0 --off --output DP-1 --mode 1920x1080 --pos 1920x0 --rotate normal --output DP-2 --off --output DP-3 --off --output HDMI-0 --mode 1920x1080 --pos 0x0 --rotate normal"
     spawn "dunst &"
     spawn "ibus-daemon -drx"
 
-    spawnOn wsIDE myEditor
     setWMName "LG3D"
 
     -- init-tray kills and restarts stalone tray, hence just "spawn" so it
@@ -1326,7 +1336,7 @@ myLogHook h = do
 myFadeHook = composeAll
     [ opaque -- default to opaque
     , isUnfocused --> opacity 0.85
-    , (title =? "scratchpad") --> opacity 0.9
+    , (title =? "scratchpad") --> opacity 1
     , (className =? "Alacritty") <&&> (isUnfocused) --> opacity 0.9
     , fmap ("Google" `isPrefixOf`) className --> opaque
     , isDialog --> opaque 
