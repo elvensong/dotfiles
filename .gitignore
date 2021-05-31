@@ -20,3 +20,5 @@
 !.config/rofi
 !.config/rofi/**
 !.config/betterlockscreenrc
+!.config/eww
+!.config/eww/**
