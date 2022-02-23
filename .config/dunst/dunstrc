@@ -166,7 +166,7 @@
     max_icon_size = 48
 
     # Paths to default icons.
-    icon_path = /usr/share/icons/Papirus-Dark/48x48/status/:/usr/share/icons/Papirus-Dark/48x48/devices/
+    icon_path = /usr/share/icons/Papirus-Dark/24x24/status/:/usr/share/icons/Papirus-Dark/24x24/devices/:/usr/share/icons/Papirus-Dark/24x24/actions/
 
     ### History ###
 
@@ -304,6 +304,14 @@
 [notify-send]
     appname = notify-send
     format = "<b>%s</b>\n<span foreground='#3f444a'>%b</span>"
+
+[audio-toggle-play-pause]
+    summary = *Audio Play/Pause*
+    format = ""
+    script = ~/.config/dunst/notify-toggle-play.sh
+[audio-stop]
+    summary = *Audio Stop*
+    new_icon = media-pause
 
     # Icon for notifications with critical urgency, uncomment to enable
     #icon = /path/to/icon

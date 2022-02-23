@@ -5,7 +5,7 @@ export PATH=$HOME/bin:/usr/local/bin:$HOME/.emacs.d/bin:$PATH
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
-export TERM=terminator
+export TERM=alacritty
 export BROWSER=qutebrowser
 export EDITOR=vim
 
@@ -110,5 +110,6 @@ alias la="ls -a"
 alias gs="git status"
 alias cl="clear"
 alias pa="push_all.sh"
+alias tlmgr='/usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode'
 
 source /home/eve/.config/broot/launcher/bash/br

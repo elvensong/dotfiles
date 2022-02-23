@@ -52,3 +52,4 @@
 (package! lsp-treemacs)
 (package! yasnippet)
 (package! smerge-mode)
+(package! evil-multiedit)
