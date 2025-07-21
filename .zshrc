@@ -1,11 +1,11 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:$HOME/.emacs.d/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$HOME/.emacs.d/bin:$JAVA_HOME/bin:$PATH
 
 #IBus has been started! If you cannot use IBus, please add below lines in ~/.bashrc, and relogin your desktop.
 export GTK_IM_MODULE=ibus
 export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
-export TERM=alacritty
+export TERM=kitty
 export BROWSER=qutebrowser
 export EDITOR=vim
 
@@ -111,5 +111,19 @@ alias gs="git status"
 alias cl="clear"
 alias pa="push_all.sh"
 alias tlmgr='/usr/share/texmf-dist/scripts/texlive/tlmgr.pl --usermode'
+alias vi="vim"
 
-source /home/eve/.config/broot/launcher/bash/br
+export ZEPHYR_SDK_INSTALL_DIR=/opt/zephyr-sdk-0.16.4
+
+# Auto-activate ZMK virtualenv
+if [ -d "$HOME/zmk" ]; then
+    cd() {
+        builtin cd "$@" && {
+            if [ -f ".zmk-env-marker" ]; then
+                source ~/.zmk_env/bin/activate
+            fi
+        }
+    }
+fi
+
+export DTC=$(which dtc)
