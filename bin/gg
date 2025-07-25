@@ -1,0 +1,14 @@
+#!/bin/bash
+
+REMOTE="$1"
+shift
+
+# Check if terminfo exists locally
+infocmp xterm-kitty > /tmp/xterm-kitty.terminfo 2>/dev/null
+
+# Upload terminfo
+scp /tmp/xterm-kitty.terminfo "$REMOTE":~ >/dev/null 2>&1
+
+# Run gg-ssh with terminfo installation
+gg-ssh "$REMOTE" --command 'tic -x ~/xterm-kitty.terminfo >/dev/null 2>&1; exec $SHELL' "$@"
+

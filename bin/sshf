@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+sshf() {
+  local ssh_config="${SSH_CONFIG:-$HOME/.ssh/config}"
+  local line host
+
+  line=$(awk '
+    BEGIN {
+      indent[1] = ""
+      indent[2] = "  "
+      indent[3] = "    "
+      indent[4] = "      "
+      color[1] = "\033[1;36m"  # cyan
+      color[2] = "\033[1;35m"  # magenta
+      color[3] = "\033[1;33m"  # yellow
+      reset = "\033[0m"
+      group_count = 0
+    }
+
+    # parse group lines (comments with #)
+    /^#/ {
+      level = match($0, /[^#]/) - 1
+      group[level] = substr($0, level + 2)
+      # Clear deeper groups
+      for (i = level + 1; i <= 10; i++) delete group[i]
+      next
+    }
+
+    # parse host lines without wildcards
+    /^Host / && !/\*/ {
+      host = $2
+
+      # Build group path key from current group array
+      path = ""
+      for (i = 1; i <= 10; i++) {
+        if (group[i] != "") {
+          path = (path == "" ? group[i] : path "|" group[i])
+        }
+      }
+      if (path == "") path = "__nogroup"
+
+      # if first time seeing this group path, remember order
+      if (!(path in groups_seen)) {
+        groups_seen[path] = 1
+        group_order[++group_count] = path
+      }
+
+      # store host under this group path
+      hosts[path][++host_count[path]] = host
+    }
+
+    END {
+      # For each group in original order, print groups and hosts
+      for (gi = 1; gi <= group_count; gi++) {
+        path = group_order[gi]
+        split(path, parts, "|")
+
+        # Print group hierarchy, but only new parts not printed before
+        for (i = 1; i <= length(parts); i++) {
+          key = ""
+          for (j = 1; j <= i; j++) {
+            key = (key == "" ? parts[j] : key "|" parts[j])
+          }
+          if (!(key in printed)) {
+            level = i
+            printf("%s%s%s%s\n", indent[level], color[level], parts[i], reset)
+            printed[key] = 1
+          }
+        }
+
+        # print hosts, indented one level deeper
+        level = length(parts) + 1
+        for (hi = 1; hi <= host_count[path]; hi++) {
+          printf("%s%s\t%s\n", indent[level], hosts[path][hi], hosts[path][hi])
+        }
+      }
+    }
+  ' "$ssh_config" | fzf --ansi --no-sort --delimiter=$'\t' --with-nth=1 \
+        --prompt='SSH → ' --header='Select a host (search matches hosts only)' \
+        --preview-window=right:60%:wrap \
+        --preview='awk -v host="{2}" "
+          BEGIN { found=0 }
+          \$1==\"Host\" && \$2==host { found=1 }
+          found && /^Host / && \$2!=host { exit }
+          found { print }
+        " '"$ssh_config"'')
+
+  [ -z "$line" ] && return
+
+  host=$(echo "$line" | cut -f2)
+  [ -z "$host" ] && return
+
+  if command -v kitty >/dev/null && [ "$TERM" = "xterm-kitty" ]; then
+    kitty +kitten ssh "$host"
+  else
+    ssh "$host"
+  fi
+}
+
+sshf "$@"
+

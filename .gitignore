@@ -5,12 +5,16 @@
 !.xinitrc
 !.list_packages
 !.zshrc
+!bin/
+!bin/**
 !.config/
 !.config/picom.conf
 !.config/alacritty/
 !.config/alacritty/**
 !.config/dunst/
 !.config/dunst/dunstrc
+!.config/quickshell
+!.config/quickshell/**
 !.rofi/
 !.xmonad/*.hs
 !.xmonad/lib/**
@@ -22,3 +26,5 @@
 !.config/betterlockscreenrc
 !.config/eww
 !.config/eww/**
+!.config/hypr/
+!.config/hypr/**
