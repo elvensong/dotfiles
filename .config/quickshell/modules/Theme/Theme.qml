@@ -2,6 +2,7 @@ pragma Singleton
 import QtQuick
 
 QtObject {
+  id: root
   // Base colors
   property color background: "#ffffff"         // Pure white background
   property color surface: "#f2f2f2"            // Light gray for panels
@@ -27,4 +28,18 @@ QtObject {
 	property int borderRadius: 6
 	property int spacing: 6
 	property int padding: 8
+	property int radius: 6
+
+  property string clockFormat: "hh:mm"
+
+  property QtObject popout: QtObject {
+	property int topRightRadius: 15
+	property int bottomRightRadius: 15
+
+  }
+
+  property QtObject iconButton: QtObject {
+	property color hover: "#d08770"
+	property color primary: root.primary
+  }
 }

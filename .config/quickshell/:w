@@ -4,13 +4,11 @@ import Quickshell.Widgets
 import QtQuick
 import QtQuick.Controls
 import Quickshell
-import Quickshell.Io
 import Quickshell.Wayland
 import "modules/SideBar"
 import "widgets/Popout"
 import "modules/Theme"
 import "process/InternetStatus"
-import "process/VpnStatus"
 import "modules/IconButton"
 
 ShellRoot {
@@ -64,9 +62,6 @@ ShellRoot {
 					case "power":
 						popout = powerPopout
 						break;
-					case "vpn":
-						popout = vpnPopout
-					break;
 					default:
 						console.log("Unrecognizable actionType value.")
 				}
@@ -77,24 +72,9 @@ ShellRoot {
 		}
 
 		Popout {
-			id: vpnPopout
-			contents: Label {
-				text: {
-				"status: " + VpnStatus.vpnInfo.status + "\n" +
-               "server: " + VpnStatus.vpnInfo.server + "\n" +
-               "protocol: " + VpnStatus.vpnInfo.protocol + "\n" +
-               "ip: " + VpnStatus.vpnInfo.ip + "\n" +
-               "dns: " + VpnStatus.vpnInfo.dns + "\n" +
-               "dnsSuffix: " + VpnStatus.vpnInfo.dnsSuffix + "\n" +
-               "throughput: " + VpnStatus.vpnInfo.throughput + "\n" +
-				"connected: " + VpnStatus.vpnInfo.connected
-				}
-			}
-		}
-
-		Popout {
 			id: powerPopout
 			contents: RowLayout {
+				id: contentColumn
 				spacing: 4
 
 				Repeater {
@@ -118,10 +98,6 @@ ShellRoot {
 					}
 				}
 			}
-		}
-
-		Process {
-			id: powerCmd
 		}
 
 		Popout {

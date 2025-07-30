@@ -95,21 +95,21 @@
 (add-hook 'prog-mode-hook 'enable-tabs)
 
 (add-hook 'lisp-interaction-mode-hook
-	  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
+		  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
 
 (require 'ox-latex)
 (with-eval-after-load 'ox-latex)
 (add-to-list 'org-latex-classes
-	     '("org-plain-latex"
-	       "\\documentclass{article}
+	         '("org-plain-latex"
+	           "\\documentclass{article}
 	[NO-DEFAULT-PACKAGES]
 	[PACKAGES]
 	[EXTRA]"
-	       ("\\section{%s}" . "\\section*{%s}")
-	       ("\\subsection{%s}" . "\\subsection*{%s}")
-	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	           ("\\section{%s}" . "\\section*{%s}")
+	           ("\\subsection{%s}" . "\\subsection*{%s}")
+	           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 (setq org-latex-listings 'minted)
 
 (setq org-latex-pdf-process
@@ -117,4 +117,13 @@
         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
         "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 
+(add-to-list 'auto-mode-alist '("\\.qml\\'" . qml-mode))
 
+
+;; (use-package! apheleia
+;;   :config
+;;   (setf (alist-get 'qmlformat apheleia-formatters)
+;;         '("qmlformat" filepath))
+
+;;   (setf (alist-get 'qml-mode apheleia-mode-alist)
+;;         'qmlformat))

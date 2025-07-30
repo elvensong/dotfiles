@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/.config/emacs/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -107,3 +107,8 @@ alias vi='nvim'
 
 # alias sshf='kitty +kitten ssh "$(awk "/^Host / && !/\\*/ { print \$2 }" ~/.ssh/config | fzf)"'
 
+export INPUT_METHOD=fcitx
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export XDG_CURRENT_DESKTOP=Hyprland 

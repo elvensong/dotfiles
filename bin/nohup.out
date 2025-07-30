@@ -1,0 +1,60 @@
+[32m  INFO[0m: Launching config: "/home/eve/.config/quickshell/shell.qml"
+[32m  INFO[0m: Shell ID: "a88448854720aeaa29d6b96979fa8d8f" Path ID "a88448854720aeaa29d6b96979fa8d8f"
+[32m  INFO[0m: Saving logs to "/run/user/1000/quickshell/by-id/ab1ga540t/log.qslog"
+[32m  INFO[0m: Configuration Loaded
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[97m scene[0m: @StatusBar.qml[13:2]: Unable to assign [undefined] to QuickshellScreenInfo*
+[33m  WARN[97m scene[0m: @StatusBar.qml[13:2]: Unable to assign [undefined] to QuickshellScreenInfo*
+[32m  INFO[0m: Configuration Loaded
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[33m  WARN[97m scene[0m: @WSContainer.qml[39:-1]: TypeError: List doesn't define a Replace function
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:3]: Unable to assign [undefined] to QuickshellScreenInfo*
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:3]: Unable to assign [undefined] to QuickshellScreenInfo*
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:3]: Unable to assign [undefined] to QuickshellScreenInfo*
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:3]: Unable to assign [undefined] to QuickshellScreenInfo*
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[97m scene[0m: @shell.qml[13:4]: Unable to assign [undefined] to QuickshellScreenInfo*
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:-1]: ReferenceError: modelData is not defined
+[33m  WARN[97m scene[0m: @StatusBar.qml[15:-1]: ReferenceError: modelData is not defined
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[97m scene[0m: @shell.qml[13:4]: Unable to assign [undefined] to QuickshellScreenInfo*
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[33m  WARN[0m: qs:@/qs/StatusBar.qml: Setting initial properties failed: PanelWindow does not have a property called modelData
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[32m  INFO[0m: Configuration Loaded
+[32m  INFO[0m: Reloading configuration...
+[32m  INFO[0m: Configuration Loaded

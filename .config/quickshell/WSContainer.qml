@@ -11,11 +11,14 @@ WrapperRectangle {
 	border.width: 2
 	border.color: Theme.border
 	color: Theme.surface
+	anchors.top: parent.top
+	anchors.horizontalCenter: parent.horizontalCenter
+	anchors.topMargin: 5
 
 	Column {
 		id: wsCol
 		spacing: Theme.spacing 
-		padding: Theme.padding 
+		padding: Theme.padding
 
 		Instantiator {
 			model: Hyprland.workspaces

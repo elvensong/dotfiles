@@ -17,7 +17,10 @@ BarContainer {
       model: Hyprland.workspaces
 
       delegate: Text {
-        text: modelData.name
+        text: {
+		  console.log("aaat": modeldata.name)
+		  return modelData.name
+		}
         color: modelData.focused ? "#81A1C1" : "#D8DEE9"
         font.bold: modelData.focused
       }
