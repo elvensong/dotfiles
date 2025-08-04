@@ -54,3 +54,6 @@
 (package! smerge-mode)
 (package! evil-multiedit)
 (package! qml-mode)
+
+(package! confluence
+  :recipe (:host github :repo "danp/confluence-el"))

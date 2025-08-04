@@ -20,6 +20,8 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Fira Code Retina" :size 12))
+(setq doom-symbol-font (font-spec :family "Symbols Nerd Font" :size 13))
+
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -95,21 +97,21 @@
 (add-hook 'prog-mode-hook 'enable-tabs)
 
 (add-hook 'lisp-interaction-mode-hook
-		  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
+	  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
 
 (require 'ox-latex)
 (with-eval-after-load 'ox-latex)
 (add-to-list 'org-latex-classes
-	         '("org-plain-latex"
-	           "\\documentclass{article}
+	     '("org-plain-latex"
+	       "\\documentclass{article}
 	[NO-DEFAULT-PACKAGES]
 	[PACKAGES]
 	[EXTRA]"
-	           ("\\section{%s}" . "\\section*{%s}")
-	           ("\\subsection{%s}" . "\\subsection*{%s}")
-	           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	           ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 (setq org-latex-listings 'minted)
 
 (setq org-latex-pdf-process
@@ -127,3 +129,13 @@
 
 ;;   (setf (alist-get 'qml-mode apheleia-mode-alist)
 ;;         'qmlformat))
+
+;; Login Confluence-el
+(use-package! confluence
+  :config
+  (setq confluence-url "http://confluence.integrosys.com/rpc/xmlrpc")
+  ;;(setq confluence-username "dung.vu")
+  ;; Optional: Store password securely using auth-source
+  ;; Or:
+  ;;(setq confluence-password "Nevermore89")
+  )

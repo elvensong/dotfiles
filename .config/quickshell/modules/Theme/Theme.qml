@@ -42,4 +42,8 @@ QtObject {
 	property color hover: "#d08770"
 	property color primary: root.primary
   }
+
+  property QtObject wsContainer: QtObject {
+	property int radius: 40
+  }
 }

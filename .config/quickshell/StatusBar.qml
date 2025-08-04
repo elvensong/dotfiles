@@ -12,12 +12,17 @@ import "widgets/NetworkWidget"
 PanelWindow	{
 	id: statusBar
 	signal enterIcon(QtObject iconMA, string actionType)
-	screen: Quickshell.screens[0]
 	implicitWidth: 50
 	anchors {
 		top: true
 		left: true
 		bottom: true
+	}
+
+	margins {
+		left: 10
+		top: 10
+		bottom: 10
 	}
 
 	WSContainer {
@@ -46,7 +51,6 @@ PanelWindow	{
 			actionType: "power"
 			Layout.alignment: Qt.AlignHCenter
 			icon: ""                      // Alternate icon (power)
-			fontFamily: "Font Awesome 6 Free"
 			fontSize: 25
 			iconColor: Theme.primary
 			hoverColor: "#d08770"

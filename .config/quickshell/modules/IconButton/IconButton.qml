@@ -5,13 +5,13 @@ import "../../modules/Theme"
 
 Rectangle {
     id: root
+	required property string icon
 
     // === Public API: Customizable from outside ===
     property string actionType
     property alias mouseArea: iconMouseArea
-    property string icon: "\uf011"
     property int fontSize: 60
-    property string fontFamily: "Font Awesome 6 Free"
+    property string fontFamily: "Symbols Nerd Font"
     property color iconColor: Theme.iconButton.primary
     property color hoverColor: Theme.iconButton.hover
     signal clicked()
@@ -20,8 +20,8 @@ Rectangle {
 
     color: "transparent"
 
-    width: iconText.paintedWidth + padding * 2
-    height: iconText.paintedHeight + padding * 2
+    width: iconText.paintedHeight + padding * 2
+    height: width
     property int padding: 10
 
     // === Internal Text ===
