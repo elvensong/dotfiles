@@ -6,12 +6,14 @@ import QtQuick.Controls
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Services.Notifications
 import "modules/SideBar"
 import "widgets/Popout"
 import "modules/Theme"
 import "process/InternetStatus"
 import "process/VpnStatus"
 import "modules/IconButton"
+import "process/NotiServer"
 
 ShellRoot {
 	/* Variants { */
@@ -99,9 +101,9 @@ ShellRoot {
 
 				Repeater {
 					model: [
-						{ text: "Shutdown", icon: "", cmd: ["systemctl", "poweroff"]},
-						{ text: "Restart", icon: "", cmd: ["systemctl", "reboot"]},
-						{ text: "Suspend", icon: "", cmd: ["/usr/bin/systemctl", "suspend"]}
+						{ text: "Shutdown", icon: "a", cmd: ["systemctl", "poweroff"]},
+						{ text: "Restart", icon: "b", cmd: ["systemctl", "reboot"]},
+						{ text: "Suspend", icon: "c", cmd: ["/usr/bin/systemctl", "suspend"]}
 					]
 
 					IconButton {
@@ -152,5 +154,12 @@ ShellRoot {
 
 			return matches;
 		}
+	}
+
+	PanelWindow {
+		id: notiPanel
+		exclusiveZone: 0
+		color: "transparent"
+
 	}
 }
