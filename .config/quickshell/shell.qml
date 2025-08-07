@@ -16,6 +16,21 @@ import "modules/IconButton"
 import "process/NotiServer"
 
 ShellRoot {
+
+	NotificationServer {
+		id: notiServer
+		bodySupported: true
+		actionsSupported: true
+		imageSupported: true
+		//persistentSupported: true
+		//keepOnReloaded: true
+
+		onNotification:  (notification) => {
+			const notif = notification
+			notif.tracked = true
+			console.log("received: " + notif.summary + notif.body)
+		}
+	}
 	/* Variants { */
 	/* 	model: Quickshell.screens */
 
