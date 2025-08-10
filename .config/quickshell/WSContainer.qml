@@ -4,28 +4,30 @@ import Quickshell.Widgets
 import QtQuick.Layouts
 import QtQml
 import QtQuick
-import "modules/Theme"
+import "themes"
 import "modules/IconButton"
 import "widgets/WorkspaceButton"
 
 WrapperRectangle {
 	id: barCont
-	radius: Theme.wsContainer.radius
+	readonly property QtObject theme: ThemeManager.currentTheme
+	radius: theme.wsContainer.radius
 
-	//border.width: 2
-	border.color: Theme.border
-	color: Theme.surface
+	border.width: theme.wsContainer.borderWidth
+	border.color: theme.border
+	color: theme.surface
 	anchors.top: parent.top
 	anchors.left: parent.left
 	anchors.right: parent.right
-	anchors.horizontalCenter: parent.horizontalCenter
+	//anchors.horizontalCenter: parent.horizontalCenter
 	anchors.topMargin: 5
+	anchors.bottomMargin: 5
 	anchors.leftMargin: 5
 	anchors.rightMargin: 5
 
 	ColumnLayout {
 		id: wsCol
-		spacing: Theme.spacing
+		spacing: 5
 		anchors.fill: parent
 		anchors.leftMargin: 5
 		anchors.rightMargin: 5
@@ -38,16 +40,17 @@ WrapperRectangle {
 				required property var modelData
 				visible: modelData.name.match(/^special:[^\s]+$/) ? false : true
 				radius: 50
-				color: modelData.focused ? Theme.primary : "transparent"
-				iconColor: modelData.focused ? Theme.surface : Theme.primary
+				//color: modelData.focused ? theme.foreground : "transparent"
+				iconColor: modelData.focused ? theme.primary : theme.foreground
 				width: wsCol.width
-				icon: {
-					console.log(modelData.name)
-					modelData.name
-				}
-				fontSize: 20
-				//font.bold: modelData.focused
-				//color: modelData.focus ? Theme.primary : Theme.textPrimary
+			//	offsetX: 2
+				/* offsetX: { */
+				/* 	if(modelData.name === '󰗰') { */
+				/* 		console.log("email workspace") */
+				/* 		return -5 */
+				/* 	} */
+				/* } */
+				icon: modelData.name
 				onClicked: modelData.activate()
 			}
 

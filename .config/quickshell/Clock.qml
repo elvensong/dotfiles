@@ -2,27 +2,56 @@ import Quickshell
 import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
-import "modules/Theme"
+import "themes"
 
 WrapperRectangle {
+	readonly property QtObject theme: ThemeManager.currentTheme
+
+	property int fontSize: root.width
+	id: root
 	Layout.alignment: Qt.AlignHCenter
+	color: theme.background
+	width: parent.width
+	border.width: 5
+	border.color: theme.border
+
+
 	//anchors.fill: parent
 	//border.width: 3
-	border.color: "black"
-	radius: Theme.radius
+	//border.color: "black"
+	//radius: theme.radius
 	//anchors.verticalCenter: parent.verticalCenter
 	//implicitWidth: textClock.implicitWidth + 20  // Optional padding
 	//implicitHeight: textClock.implicitHeight + 10
 
-	Text {
-		id: textClock
-		font.pixelSize: 20
-		//anchors.centerIn: parent
-		//anchors.horizontalCenter: statusBar.horizontalCenter
-		text: "\n" + clock.hours + "\n" + clock.minutes
-		//text: Qt.formatDateTime(clock.date, Theme.clockFormat)
-	}
+	ColumnLayout {
 
+		Text {
+			id: textClock
+			font.pixelSize: fontSize
+			//font.pixelSize: 20
+			font.family: "IBM Plex Mono"
+			color: theme.foreground
+			font.weight: 500
+			//anchors.centerIn: parent
+			//anchors.horizontalCenter: statusBar.horizontalCenter
+			text: clock.hours.toString().padStart(2, "0")
+			//text: Qt.formatDateTime(clock.date, Theme.clockFormat)
+		}
+
+		Text {
+			id: textMin
+			font.pixelSize: fontSize
+			//font.pixelSize: 20
+			font.family: "IBM Plex Mono"
+			color: theme.foreground
+			font.weight: 500
+			//anchors.centerIn: parent
+			//anchors.horizontalCenter: statusBar.horizontalCenter
+			text: clock.minutes.toString().padStart(2, "0")
+			//text: Qt.formatDateTime(clock.date, Theme.clockFormat)
+		}
+	}
 	SystemClock	{
 		id: clock
 		precision: SystemClock.Minutes

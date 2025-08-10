@@ -7,18 +7,25 @@ import QtQuick.Controls
 import Quickshell.Io
 import "../../models/NetworkTypeConstants" as NetType
 import "../../process/InternetStatus"
-import "../../modules/Theme"
 import "../../process/VpnStatus"
 import "../../modules/IconButton"
+import "../../themes"
 
-Rectangle {
+
+Item {
+	readonly property QtObject theme: ThemeManager.currentTheme
+	//radius: theme.wsContainer.radius
+	//border.width: 2
+	//border.color: theme.border
+	//color: theme.surface
+	Layout.alignment: Qt.AlignHCenter
+	implicitHeight: networkWidgetColumn.implicitHeight
+	width: parent.width - 10
+
     id: root
 	signal enterIcon(QtObject iconMA, string actionType)
 	//Layout.alignment: Qt.AlignHCenter
-    color: Theme.surface
-	implicitHeight: networkWidgetColumn.implicitHeight
-	width: parent.width
-	property int iconSize: 20
+	//property int iconSize: 20
 
     // Load the InternetStatus singleton
 	InternetStatus {
@@ -28,15 +35,26 @@ Rectangle {
     property var wifi: internetStatus.wifi
     property var ethernet: internetStatus.ethernet
 
+	Rectangle {
+		anchors.fill: parent
+		radius: theme.wsContainer.radius
+		border.width: 2
+		border.color: theme.border
+		color: theme.surface
+	}
+
     ColumnLayout {
-		visible: true
 		id: networkWidgetColumn
+		width: root.width
+		//height: 150
+
         //anchors.centerIn: parent
-        spacing: 4
 
 		IconButton {
 			id: vpnIcon
-			fontSize: root.iconSize
+			visible: true
+			//fontSize: root.iconSize
+			//fontSize: 30
 			actionType: "vpn"
 			icon: {
 				if (VpnStatus.vpnInfo.status === "connected") {
@@ -45,9 +63,9 @@ Rectangle {
 			}
 			iconColor: {
 				if (VpnStatus.vpnInfo.status === "connected") {
-					return Theme.primary
+					return theme.primary
 				} else {
-					return Theme.textPrimary
+					return theme.textDisabled
 				}
 			}
 			onEntered: {
@@ -67,12 +85,18 @@ Rectangle {
         // Show WiFi icon if WiFi is connected
         IconButton {
 			id: wifiIcon
-			fontSize: root.iconSize
+			iconColor: {
+				if (wifi !== undefined && wifi.ip !== "") {
+					return theme.accent;
+				} else return theme.textDisabled;
+			}
+			implicitHeight: parent.width
+			//fontSize: 30
 			actionType: "network"
 			icon:  {
 				if (wifi !== undefined && wifi.ip !== "") {
-					return "\uf1eb";
-				} else return "";
+					return "󰖩";
+				} else return "󰖪";
 			}
 			onEntered: {
 				root.enterIcon(wifiIcon.mouseArea, wifiIcon.actionType)
@@ -94,7 +118,7 @@ Rectangle {
 						return "\uf6ff";
 					} else return "";
 				}
-                color: Theme.primary
+                color: theme.primary
             }
         }
     }
