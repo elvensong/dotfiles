@@ -49,12 +49,11 @@ PanelWindow	{
 		IconButton {
 			id: powerBtn
 			actionType: "power"
-			Layout.alignment: Qt.AlignHCenter
-			icon: ""                      // Alternate icon (power)
-			fontSize: 25
-			iconColor: Theme.primary
-			hoverColor: "#d08770"
-			onEntered: {
+			//Layout.alignment: Qt.AlignHCenter
+			icon: "⏻"                      // Alternate icon (power)
+			fontSize: 27
+			iconColor: theme.negative
+			onClicked: {
 				statusBar.enterIcon(powerBtn.mouseArea, powerBtn.actionType)
 			}
 		}

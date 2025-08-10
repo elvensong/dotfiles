@@ -220,3 +220,7 @@ element.selected {
   background-color:	@foreground;
   text-color: @background;
 }
+
+//@theme "/usr/share/rofi/themes/gruvbox-dark.rasi"
+
+@theme "/usr/share/rofi/themes/gruvbox-light.rasi"

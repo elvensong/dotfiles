@@ -2,13 +2,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../../modules/Theme"
+import "../../themes"
 
 Rectangle {
+	readonly property QtObject theme: ThemeManager.currentTheme
 	id: root
 	implicitWidth: contents.implicitWidth
 	implicitHeight: contents.implicitHeight
 	topRightRadius: Theme.popout.topRightRadius
 	bottomRightRadius: Theme.popout.bottomRightRadius
+	color: theme.background
+	/* border.width: 2 */
+	/* border.color: theme.border */
 	property bool showing: false
 	required property Item contents
 	x: showing ? 0 : -width
