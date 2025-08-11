@@ -5,35 +5,31 @@ import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell.Widgets
 import "modules/IconButton"
-import "modules/Theme"
 import "modules/SideBar"
+import "themes"
 import "widgets/NetworkWidget"
 
 PanelWindow	{
 	id: statusBar
+
+	readonly property QtObject theme: ThemeManager.currentTheme
 	signal enterIcon(QtObject iconMA, string actionType)
 	implicitWidth: 50
+	color: theme.background
 	anchors {
 		top: true
 		left: true
 		bottom: true
 	}
 
-	margins {
-		left: 10
-		top: 10
-		bottom: 10
-	}
-
-	WSContainer {
-
-	}
+	WSContainer {}
 
 	ColumnLayout {
 		anchors.bottom:parent.bottom
 		anchors.left: parent.left
 		anchors.right: parent.right
 		spacing: 5
+		id: bottomBlock
 		//Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
 		NetworkWidget {
@@ -44,7 +40,8 @@ PanelWindow	{
 			networkWidget.enterIcon.connect(enterIcon)
 		}
 
-		Clock {}
+		Clock {
+		}
 
 		IconButton {
 			id: powerBtn

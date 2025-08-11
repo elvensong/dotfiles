@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import "../../themes"
 
 Item {
@@ -8,22 +9,35 @@ Item {
 	required property string title
 	required property string body
 
+	implicitWidth: notiLayout.implicitWidth
+	implicitHeight: notiLayout.implicitHeight
+
 	Rectangle {
+		anchors.fill: parent
 		color: theme.background
 		border.color: theme.border
 		border.width: 2
+		radius: 12
 	}
 
-	Text {
-		id: title
-		text: root.title
+	ColumnLayout {
+		id: notiLayout
 
-		anchors.top: parent.top
-	}
+		Text {
+			font.pixelSize: 15
+			text: "aaaaaa"
+		}
 
-	Text {
-		id: body
-		text: root.body
-		anchors.bottom: parent.bottom
+		Text {
+			id: title
+			text: root.title
+			font.pixelSize: 15
+		}
+
+		Text {
+			id: body
+			text: root.body
+			font.pixelSize: 15
+		}
 	}
 }

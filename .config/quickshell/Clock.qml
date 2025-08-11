@@ -7,13 +7,13 @@ import "themes"
 WrapperRectangle {
 	readonly property QtObject theme: ThemeManager.currentTheme
 
-	property int fontSize: root.width
+	property int fontSize
 	id: root
 	Layout.alignment: Qt.AlignHCenter
 	color: theme.background
-	width: parent.width
-	border.width: 5
-	border.color: theme.border
+	/* width: parent.width */
+	/* border.width: 2 */
+	/* border.color: theme.border */
 
 
 	//anchors.fill: parent
@@ -27,9 +27,8 @@ WrapperRectangle {
 	ColumnLayout {
 
 		Text {
-			id: textClock
-			font.pixelSize: fontSize
-			//font.pixelSize: 20
+			id: textHour
+			font.pixelSize: 20
 			font.family: "IBM Plex Mono"
 			color: theme.foreground
 			font.weight: 500
@@ -41,8 +40,7 @@ WrapperRectangle {
 
 		Text {
 			id: textMin
-			font.pixelSize: fontSize
-			//font.pixelSize: 20
+			font.pixelSize: 20
 			font.family: "IBM Plex Mono"
 			color: theme.foreground
 			font.weight: 500

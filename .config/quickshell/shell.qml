@@ -10,27 +10,16 @@ import Quickshell.Services.Notifications
 import "modules/SideBar"
 import "widgets/Popout"
 import "modules/Theme"
+import "themes"
 import "process/InternetStatus"
 import "process/VpnStatus"
 import "modules/IconButton"
 import "process/NotiServer"
+import "widgets/NotificationReport"
 
 ShellRoot {
+	readonly property QtObject theme: ThemeManager.currentTheme
 
-	NotificationServer {
-		id: notiServer
-		bodySupported: true
-		actionsSupported: true
-		imageSupported: true
-		//persistentSupported: true
-		//keepOnReloaded: true
-
-		onNotification:  (notification) => {
-			const notif = notification
-			notif.tracked = true
-			console.log("received: " + notif.summary + notif.body)
-		}
-	}
 	/* Variants { */
 	/* 	model: Quickshell.screens */
 
@@ -96,42 +85,65 @@ ShellRoot {
 		Popout {
 			id: vpnPopout
 			contents: Label {
+				font.pixelSize: 17
+				font.family: theme.fontFamily
 				text: {
-				"status: " + VpnStatus.vpnInfo.status + "\n" +
-               "server: " + VpnStatus.vpnInfo.server + "\n" +
-               "protocol: " + VpnStatus.vpnInfo.protocol + "\n" +
-               "ip: " + VpnStatus.vpnInfo.ip + "\n" +
-               "dns: " + VpnStatus.vpnInfo.dns + "\n" +
-               "dnsSuffix: " + VpnStatus.vpnInfo.dnsSuffix + "\n" +
-               "throughput: " + VpnStatus.vpnInfo.throughput + "\n" +
-				"connected: " + VpnStatus.vpnInfo.connected
+				"Status: " + VpnStatus.vpnInfo.status + "\n" +
+               "Server: " + VpnStatus.vpnInfo.server + "\n" +
+               "Protocol: " + VpnStatus.vpnInfo.protocol + "\n" +
+               "IP: " + VpnStatus.vpnInfo.ip + "\n" +
+               "DNS: " + VpnStatus.vpnInfo.dns + "\n" +
+               "DNS Suffix: " + VpnStatus.vpnInfo.dnsSuffix + "\n" +
+               "Throughput: " + VpnStatus.vpnInfo.throughput + "\n" +
+				"Connected: " + VpnStatus.vpnInfo.connected
 				}
 			}
 		}
 
 		Popout {
 			id: powerPopout
+			/* x: 0 */
+			/* y: 600 */
+			/* width: 200 */
+			height: 70
 			contents: RowLayout {
-				spacing: 4
+				anchors.fill: parent
+				spacing: 10
 
-				Repeater {
-					model: [
-						{ text: "Shutdown", icon: "a", cmd: ["systemctl", "poweroff"]},
-						{ text: "Restart", icon: "b", cmd: ["systemctl", "reboot"]},
-						{ text: "Suspend", icon: "c", cmd: ["/usr/bin/systemctl", "suspend"]}
-					]
+				IconButton {
+					icon: "⭘"
+					width: 45
+					iconColor: theme.negative
+					//text: "Shutdown"
+					onClicked: {
+						//sideBar.showing = false
+						//sleepCmd.running = true
+						powerCmd.command = ["systemctl", "poweroff"]
+						powerCmd.running = true
+					}
+				}
 
-					IconButton {
-						icon: modelData.icon
-						fontSize: 45
-						iconColor: Theme.primary
-						hoverColor: "#d08770"
-						onClicked: {
-							//sideBar.showing = false
-							//sleepCmd.running = true
-							powerCmd.command = modelData.cmd
-							powerCmd.running = true
-						}
+				IconButton {
+					icon: "󰜉"
+					width: 45
+					iconColor: theme.accent
+					onClicked: {
+						//sideBar.showing = false
+						//sleepCmd.running = true
+						powerCmd.command = ["systemctl", "reboot"]
+						powerCmd.running = true
+					}
+				}
+
+				IconButton {
+					icon: "⏾"
+					width: 45
+					iconColor: theme.warning
+					onClicked: {
+						//sideBar.showing = false
+						//sleepCmd.running = true
+						powerCmd.command = ["systemctl", "suspend"]
+						powerCmd.running = true
 					}
 				}
 			}
@@ -144,30 +156,14 @@ ShellRoot {
 		Popout {
 			id: wifiPopout
 			contents: Label {
+				font.pixelSize: 17
+				font.family: theme.fontFamily
 				text: {
-					statusPanel.wifi.ip + "\n" + statusPanel.wifi.interfaceName + "\n" + statusPanel.wifi.ssid
+					"IP:" + statusPanel.wifi.ip + "\n"
+						+ "Interface: " + statusPanel.wifi.interfaceName + "\n"
+						+ "SSID: " + statusPanel.wifi.ssid
 				}
 			}
-		}
-
-		function findChildrenOfType(item, typeName) {
-			let matches = [];
-
-			for (let i = 0; i < item.children.length; ++i) {
-				let child = item.children[i];
-
-				console.log(child.toString())
-				if (child.metaObject.className === typeName) {
-					matches.push(child);
-				}
-
-				// Recurse if child has children (i.e., is an Item)
-				if (child.children) {
-					matches = matches.concat(findChildrenOfType(child, typeName));
-				}
-			}
-
-			return matches;
 		}
 	}
 
@@ -175,6 +171,135 @@ ShellRoot {
 		id: notiPanel
 		exclusiveZone: 0
 		color: "transparent"
+		width: 400
 
+		anchors {
+			top: true
+			right: true
+			bottom: true
+		}
+
+		ListModel {
+			id: notiList
+		/*  	ListElement {title: "aha"; body: "body"; actions: {}} */
+		}
+
+		Component {
+			id: notiDelegate
+			Item {
+				//id: notiItem
+				readonly property QtObject theme: ThemeManager.currentTheme
+
+				required property Notification notiItem
+				/* required property string title */
+				/* required property string body */
+				width: parent.width
+
+				implicitHeight: notiLayout.implicitHeight
+
+				Rectangle {
+					anchors.fill: parent
+					color: theme.background
+					border.color: theme.border
+					border.width: 2
+					radius: 12
+				}
+
+				MouseArea {
+					anchors.fill: parent
+
+					onClicked: {
+						console.log("Before remove: " + notiList.count)
+						console.log("notiItem ID: " + notiItem.id)
+						var rmIdx = -1
+						for(var i = 0; i < notiList.count; i++) {
+
+							console.log("notiList i ID: " + notiList.get(i).notiItem.id)
+							if(notiList.get(i).notiItem.id === notiItem.id) {
+								rmIdx = i
+								console.log("Found removed notification:" + rmIdx)
+								break
+							}
+						}
+
+						notiItem.dismiss()
+						notiList.remove(rmIdx)
+						console.log("After remove: " + notiList.count)
+					}
+				}
+
+				ColumnLayout {
+					id: notiLayout
+					implicitHeight: title.contentHeight + body.contentHeight
+
+
+					Text {
+						id: title
+						text: notiItem.summary
+						font.pixelSize: 15
+						wrapMode: Text.Wrap
+						font.weight: Font.Bold
+					}
+
+					Text {
+						id: body
+						text: notiItem.body
+						font.pixelSize: 15
+						wrapMode: Text.Wrap
+						clip: false
+					}
+
+					RowLayout {
+						Repeater {
+							model: notiItem.actions
+
+							Button {
+								text: modelData.text
+								onClicked:{
+									console.log("Before remove: " + notiList.count)
+									modelData.invoke()
+									console.log("Before remove: " + notiList.count)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+
+		ListView {
+			anchors.fill: parent
+			model: notiList
+			delegate: notiDelegate
+
+			Button {
+				visible: notiList.count > 0 ? true : false
+				text: "Dismiss All"
+				onClicked: notiList.clear()
+			}
+
+		}
+
+
+		NotificationServer {
+			id: notiServer
+			bodySupported: true
+			actionsSupported: true
+			imageSupported: true
+			//persistentSupported: true
+			keepOnReload: true
+
+			onNotification:  (notification) => {
+				const notif = notification
+				notif.tracked = true
+			/* 	notiList.append({ */
+			/* 		"title": notif.summary, */
+			/* 		"body": notif.body, */
+			/* 		"actions": notif.actions */
+			/* 	}) */
+				notiList.append({notiItem: notif})
+			}
+		}
 	}
 }

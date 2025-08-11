@@ -1,5 +1,7 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/.config/emacs/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export ANT_HOME=/opt/apache-ant-1.10.15
+ANT_OPTS="$ANT_OPTS -Djdk.jar.maxSignatureFileSize=32000000"
+export PATH=$ANT_HOME/bin:$HOME/.config/emacs/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
