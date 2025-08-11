@@ -1,9 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 export ANT_HOME=/opt/apache-ant-1.10.15
 ANT_OPTS="$ANT_OPTS -Djdk.jar.maxSignatureFileSize=32000000"
-export PATH=$ANT_HOME/bin:$HOME/.config/emacs/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$ANT_HOME/bin:$HOME/.emacs.d/bin:$HOME/.config/emacs/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
-# Path to your Oh My Zsh installation.
+# Path to your Oh My Zsh installation	.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
@@ -19,7 +19,7 @@ ZSH_THEME="nanotech"
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+CASE_SENSITIVE="true"
 
 # Uncomment the following line to use hyphen-insensitive completion.
 # Case-sensitive completion must be off. _ and - will be interchangeable.
@@ -106,6 +106,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias gg='gg-ssh'
 alias vi='nvim'
+alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
 # alias sshf='kitty +kitten ssh "$(awk "/^Host / && !/\\*/ { print \$2 }" ~/.ssh/config | fzf)"'
 

@@ -73,6 +73,9 @@
 
 (add-hook! java-mode #'lsp)
 
+(map! :leader
+      :desc "Toggle treemacs buffer"
+      "t t" #'treemacs)
 
 (require 'treemacs)
 (require 'treemacs-scope)
@@ -99,21 +102,21 @@
 (add-hook 'prog-mode-hook 'enable-tabs)
 
 (add-hook 'lisp-interaction-mode-hook
-	  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
+		  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
 
 (require 'ox-latex)
 (with-eval-after-load 'ox-latex)
 (add-to-list 'org-latex-classes
-	     '("org-plain-latex"
-	       "\\documentclass{article}
+	         '("org-plain-latex"
+	           "\\documentclass{article}
 	[NO-DEFAULT-PACKAGES]
 	[PACKAGES]
 	[EXTRA]"
-	       ("\\section{%s}" . "\\section*{%s}")
-	       ("\\subsection{%s}" . "\\subsection*{%s}")
-	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	           ("\\section{%s}" . "\\section*{%s}")
+	           ("\\subsection{%s}" . "\\subsection*{%s}")
+	           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 (setq org-latex-listings 'minted)
 
 (setq org-latex-pdf-process
@@ -141,3 +144,12 @@
   ;; Or:
   ;;(setq confluence-password "Nevermore89")
   )
+
+(use-package! beacon
+  :config
+  (setq beacon-color "#ff9f1c")   ;; Optional: custom color
+  (setq beacon-blink-when-point-moves-vertically t)
+  (setq beacon-blink-when-focused t)
+  (setq beacon-blink-when-window-changes t)
+  (setq beacon-blink-when-window-scrolls t)
+  (beacon-mode 1))                ;; Enable globally
