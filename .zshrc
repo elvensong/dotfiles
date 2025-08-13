@@ -90,6 +90,10 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='nvim'
 # fi
 
+em() {
+  emacsclient -n -e "(find-file-other-window \"$(realpath "$1")\")" >/dev/null
+}
+
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
 
@@ -115,3 +119,5 @@ export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
 export XDG_CURRENT_DESKTOP=Hyprland 
+export XDG_SESSION_TYPE=wayland
+export XDG_SESSION_DESKTOP=Hyprland

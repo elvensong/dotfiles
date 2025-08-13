@@ -19,9 +19,8 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Fira Code Retina" :size 12))
-(setq doom-symbol-font (font-spec :family "Symbols Nerd Font" :size 13))
-
+(setq doom-font (font-spec :family "Fira Code Retina" :size 12)
+      doom-symbol-font (font-spec :family "Inconsolata Nerd Font" :size 14))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -68,6 +67,12 @@
 ;; You can also try 'gd' (or 'C-c g d') to jump to their definition and see how
 ;; they are implemented.
 
+;; (when (display-graphic-p)
+;;   (require 'all-the-icons))
+;; ;; or
+;; (use-package all-the-icons
+;;   :if (displry-graphic-p))
+
 (add-to-list 'auto-mode-alist
              '("\\.apib$" . apib-mode))
 
@@ -99,24 +104,24 @@
 (after! pdf-view
   (add-hook 'pdf-view-mode-hook 'pdf-view-midnight-minor-mode))
 
-(add-hook 'prog-mode-hook 'enable-tabs)
+;;(add-hook 'prog-mode-hook 'enable-tabs)
 
 (add-hook 'lisp-interaction-mode-hook
-		  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
+	  (lambda () (global-set-key (kbd "<f5>") '+eval/buffer-or-region)))
 
 (require 'ox-latex)
 (with-eval-after-load 'ox-latex)
 (add-to-list 'org-latex-classes
-	         '("org-plain-latex"
-	           "\\documentclass{article}
+	     '("org-plain-latex"
+	       "\\documentclass{article}
 	[NO-DEFAULT-PACKAGES]
 	[PACKAGES]
 	[EXTRA]"
-	           ("\\section{%s}" . "\\section*{%s}")
-	           ("\\subsection{%s}" . "\\subsection*{%s}")
-	           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-	           ("\\paragraph{%s}" . "\\paragraph*{%s}")
-	           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	       ("\\section{%s}" . "\\section*{%s}")
+	       ("\\subsection{%s}" . "\\subsection*{%s}")
+	       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 (setq org-latex-listings 'minted)
 
 (setq org-latex-pdf-process
@@ -139,10 +144,10 @@
 (use-package! confluence
   :config
   (setq confluence-url "http://confluence.integrosys.com/rpc/xmlrpc")
-  ;;(setq confluence-username "dung.vu")
+  (setq confluence-username "dung.vu")
   ;; Optional: Store password securely using auth-source
   ;; Or:
-  ;;(setq confluence-password "Nevermore89")
+  (setq confluence-password "Nevermore89")
   )
 
 (use-package! beacon

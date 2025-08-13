@@ -36,7 +36,7 @@ ShellRoot {
 		implicitWidth: 400
 		mask:
 			Region {
-				item: sideBar
+				item: rect
 			}
 		Rectangle {
 			id: rect
@@ -173,6 +173,25 @@ ShellRoot {
 		color: "transparent"
 		width: 400
 
+		mask:
+			Region {
+				item: {
+					if (notiList.count > 0) {
+						return notiListView
+					} else {
+						return clickThroughZoneNotiPanel
+					}
+				}
+
+			}
+
+		Rectangle {
+			id: clickThroughZoneNotiPanel
+			anchors.centerIn: parent
+			width: 1
+			height: 1
+		}
+
 		anchors {
 			top: true
 			right: true
@@ -269,7 +288,10 @@ ShellRoot {
 
 
 		ListView {
-			anchors.fill: parent
+			id: notiListView
+			anchors.top: parent.top
+			anchors.right: parent.right
+			//anchors.fill: parent
 			model: notiList
 			delegate: notiDelegate
 
