@@ -16,8 +16,13 @@ import "process/VpnStatus"
 import "modules/IconButton"
 import "process/NotiServer"
 import "widgets/NotificationReport"
+import "process/LoadConfig"
 
 ShellRoot {
+
+	Component.onCompleted: {
+		LoadConfig.loadConfig.running = true
+	}
 	readonly property QtObject theme: ThemeManager.currentTheme
 
 	/* Variants { */
@@ -171,19 +176,18 @@ ShellRoot {
 		id: notiPanel
 		exclusiveZone: 0
 		color: "transparent"
-		width: 400
+		width: 250
 
-		mask:
-			Region {
-				item: {
-					if (notiList.count > 0) {
-						return notiListView
-					} else {
-						return clickThroughZoneNotiPanel
-					}
+		mask: Region {
+			item: {
+				if (notiList.count > 0) {
+					return notiListLayout
+				} else {
+					return clickThroughZoneNotiPanel
 				}
-
 			}
+
+		}
 
 		Rectangle {
 			id: clickThroughZoneNotiPanel
@@ -200,6 +204,13 @@ ShellRoot {
 
 		ListModel {
 			id: notiList
+
+			function clearNotificationList() {
+				for(let i = 0; i < count; i++) {
+					get(i).notiItem.dismiss()
+				}
+				clear()
+			}
 		/*  	ListElement {title: "aha"; body: "body"; actions: {}} */
 		}
 
@@ -286,21 +297,26 @@ ShellRoot {
 			}
 		}
 
-
-		ListView {
-			id: notiListView
-			anchors.top: parent.top
+		ColumnLayout {
+			id:notiListLayout
+			anchors.top: notiPanel.top
+			anchors.left: parent.left
 			anchors.right: parent.right
-			//anchors.fill: parent
-			model: notiList
-			delegate: notiDelegate
+
+			ListView {
+				id: notiListView
+				width: parent.width
+				implicitHeight: contentHeight
+				//anchors.fill: parent
+				model: notiList
+				delegate: notiDelegate
+			}
 
 			Button {
 				visible: notiList.count > 0 ? true : false
 				text: "Dismiss All"
-				onClicked: notiList.clear()
+				onClicked: notiList.clearNotificationList()
 			}
-
 		}
 
 
@@ -314,6 +330,7 @@ ShellRoot {
 
 			onNotification:  (notification) => {
 				const notif = notification
+				console.log("Received noti:" + notification.summary)
 				notif.tracked = true
 			/* 	notiList.append({ */
 			/* 		"title": notif.summary, */
