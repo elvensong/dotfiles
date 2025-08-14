@@ -1,3 +1,5 @@
+//@ pragma UseQApplication
+
 import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell.Widgets
@@ -22,6 +24,7 @@ ShellRoot {
 
 	Component.onCompleted: {
 		LoadConfig.loadConfig.running = true
+		Qt.application.iconTheme = "Papirus"
 	}
 	readonly property QtObject theme: ThemeManager.currentTheme
 

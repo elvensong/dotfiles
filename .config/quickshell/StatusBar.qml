@@ -4,6 +4,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell.Widgets
+import Quickshell.Services.SystemTray
+
 import "modules/IconButton"
 import "modules/SideBar"
 import "themes"
@@ -31,6 +33,10 @@ PanelWindow	{
 		spacing: 5
 		id: bottomBlock
 		//Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+		SystemTrayPanel {
+			parentWindow: statusBar
+		}
 
 		NetworkWidget {
 			id: networkWidget
