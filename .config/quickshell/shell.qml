@@ -227,14 +227,6 @@ ShellRoot {
 
 				implicitHeight: notiLayout.implicitHeight
 
-				Rectangle {
-					anchors.fill: parent
-					color: theme.background
-					border.color: theme.border
-					border.width: 2
-					radius: 12
-				}
-
 				MouseArea {
 					anchors.fill: parent
 
@@ -258,37 +250,55 @@ ShellRoot {
 					}
 				}
 
-				ColumnLayout {
-					id: notiLayout
-					implicitHeight: title.contentHeight + body.contentHeight
+				WrapperRectangle {
+					color: theme.background
+					anchors.fill: parent
+					border.color: theme.border
+					border.width: 2
+					radius: 12
 
+					Item {
+						anchors.fill: parent
+						anchors.margins: 7
 
-					Text {
-						id: title
-						text: notiItem.summary
-						font.pixelSize: 15
-						wrapMode: Text.Wrap
-						font.weight: Font.Bold
-					}
+						ColumnLayout {
+							id: notiLayout
+							//implicitHeight: title.contentHeight + body.contentHeight + notiActionBtnLayout.implicitHeight
 
-					Text {
-						id: body
-						text: notiItem.body
-						font.pixelSize: 15
-						wrapMode: Text.Wrap
-						clip: false
-					}
+							Text {
+								id: title
+								text: notiItem.summary
+								font.pixelSize: 15
+								wrapMode: Text.Wrap
+								Layout.preferredWidth: notiPanel.width
+								font.weight: Font.Bold
+							}
 
-					RowLayout {
-						Repeater {
-							model: notiItem.actions
+							Text {
+								id: body
+								text: notiItem.body
+								font.pixelSize: 15
+								wrapMode: Text.Wrap
+								Layout.preferredWidth: notiPanel.width
+								clip: false
+							}
 
-							Button {
-								text: modelData.text
-								onClicked:{
-									console.log("Before remove: " + notiList.count)
-									modelData.invoke()
-									console.log("Before remove: " + notiList.count)
+							RowLayout {
+								id: notiActionBtnLayout
+								width: parent.width
+								//implicitHeight: notiItemActionBtn.implicitHeight
+								Repeater {
+									model: notiItem.actions
+
+									Button {
+										text: modelData.text
+										id: notiItemActionBtn
+										onClicked:{
+											console.log("Before remove: " + notiList.count)
+											modelData.invoke()
+											console.log("Before remove: " + notiList.count)
+										}
+									}
 								}
 							}
 						}
@@ -305,7 +315,7 @@ ShellRoot {
 
 			ListView {
 				id: notiListView
-				width: parent.width
+				Layout.fillWidth: true
 				implicitHeight: contentHeight
 				//anchors.fill: parent
 				model: notiList
@@ -314,6 +324,7 @@ ShellRoot {
 
 			Button {
 				visible: notiList.count > 0 ? true : false
+				Layout.fillWidth: true
 				text: "Dismiss All"
 				onClicked: notiList.clearNotificationList()
 			}
@@ -330,7 +341,7 @@ ShellRoot {
 
 			onNotification:  (notification) => {
 				const notif = notification
-				console.log("Received noti:" + notification.summary)
+				console.log("Received noti:" + notification.summary + ", with timeout: " + notification.expireTimeout)
 				notif.tracked = true
 			/* 	notiList.append({ */
 			/* 		"title": notif.summary, */
