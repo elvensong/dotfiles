@@ -158,3 +158,54 @@
   (setq beacon-blink-when-window-changes t)
   (setq beacon-blink-when-window-scrolls t)
   (beacon-mode 1))                ;; Enable globally
+
+(defun my/switch-theme (theme)
+  (interactive)
+  "Disable active themes and load THEME."
+  (mapc #'disable-theme custom-enabled-themes)
+  (load-theme theme t))
+
+;; Custom function to prepend tab number to tab label
+(after! centaur-tabs
+  (defun my/centaur-tabs-tab-label (tab)
+    "Return a label for TAB with its index number."
+    (let* ((buf (car tab))
+           (name (format "%s" (buffer-name buf))r
+                 (index (1+ (cl-position tab (centaur-tabs-tabs (current-buffer))
+                                         :test #'equal))))
+           (format "%d:%s" index name)))
+
+    ;; Set centaur tab's label function to above custom function.
+    (setq centaur-tabs-buffer-tab-label-function #'my/centaur-tabs-tab-label)))
+
+;; Put this in ~/.doom.d/config.el
+(defun my-psvn-fix-toggle-read-only ()
+  "Shim for old `psvn` expecting `toggle-read-only`."
+  (unless (fboundp 'toggle-read-only)
+    (defun toggle-read-only (&optional arg)
+      "Compatibility shim for psvn: use `read-only-mode' instead."
+      (interactive "P")
+      (read-only-mode (if arg (prefix-numeric-value arg) 'toggle)))))
+
+;; Ensure shim is defined before loading psvn
+(my-psvn-fix-toggle-read-only)
+
+(use-package! dired-atool
+  :after dired
+  :config
+  (defun my/dired-open-archive-as-folder ()
+    "If point is on an archive, extract to a temp dir and open it in Dired.
+Otherwise, open the file as usual."
+    (interactive)
+    (let ((file (dired-get-filename nil t)))
+      (if (and file
+               (string-match-p
+                (regexp-opt '(".zip" ".rar" ".7z" ".tar" ".tar.gz" ".tgz"))
+                (downcase file)))
+          (dired-atool-do-extract-to-temporary-directory)
+        (dired-find-file))))
+
+  ;; Use RET to open archives as folders (like WinRAR/7-Zip)
+  (map! :map dired-mode-map
+        :n [return] #'my/dired-open-archive-as-folder
+        :n "o"      #'my/dired-open-archive-as-folder))

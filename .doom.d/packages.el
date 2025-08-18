@@ -55,7 +55,4 @@
 (package! evil-multiedit)
 (package! qml-mode)
 (package! beacon)
-;;(package! all-the-icons)
-
-(package! confluence
-  :recipe (:host github :repo "danp/confluence-el"))
+(package! dired-atool)

@@ -10,6 +10,7 @@ import "modules/IconButton"
 import "modules/SideBar"
 import "themes"
 import "widgets/NetworkWidget"
+import "process/LoadConfig"
 
 PanelWindow	{
 	id: statusBar
@@ -26,39 +27,56 @@ PanelWindow	{
 
 	WSContainer {}
 
-	ColumnLayout {
-		anchors.bottom:parent.bottom
-		anchors.left: parent.left
-		anchors.right: parent.right
-		spacing: 5
+	Column {
 		id: bottomBlock
-		//Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+		anchors {
+			left: parent.left
+			right: parent.right
+			bottom: parent.bottom
+		}
+		width: parent.width
+		spacing: 10
+
+		// Top spacer to push content down
+		Item { Layout.fillHeight: true }
+
+		Button {
+			anchors.horizontalCenter: parent.horizontalCenter
+			onClicked: { LoadConfig.loadConfig.running = true }
+		}
 
 		SystemTrayPanel {
+			width: parent.width
 			parentWindow: statusBar
 		}
 
+		// Network Widget with margins
 		NetworkWidget {
 			id: networkWidget
-		}
-
-		Component.onCompleted: {
-			networkWidget.enterIcon.connect(enterIcon)
+			anchors.horizontalCenter: parent.horizontalCenter
 		}
 
 		Clock {
+			anchors.horizontalCenter: parent.horizontalCenter
 		}
 
 		IconButton {
 			id: powerBtn
+			anchors.horizontalCenter: parent.horizontalCenter
 			actionType: "power"
-			//Layout.alignment: Qt.AlignHCenter
-			icon: "⏻"                      // Alternate icon (power)
+			icon: "⏻"
 			fontSize: 27
 			iconColor: theme.negative
 			onClicked: {
 				statusBar.enterIcon(powerBtn.mouseArea, powerBtn.actionType)
 			}
+		}
+
+		// Bottom margin
+		Item { height: 10; width: 1 }
+
+		Component.onCompleted: {
+			networkWidget.enterIcon.connect(enterIcon)
 		}
 	}
 }

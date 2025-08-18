@@ -13,112 +13,94 @@ import "../../themes"
 
 
 Item {
-	readonly property QtObject theme: ThemeManager.currentTheme
-	//radius: theme.wsContainer.radius
-	//border.width: 2
-	//border.color: theme.border
-	//color: theme.surface
-	Layout.alignment: Qt.AlignHCenter
-	implicitHeight: networkWidgetColumn.implicitHeight
-	width: parent.width - 10
-
     id: root
-	signal enterIcon(QtObject iconMA, string actionType)
-	//Layout.alignment: Qt.AlignHCenter
-	//property int iconSize: 20
+    
+    readonly property QtObject theme: ThemeManager.currentTheme
+    width: parent.width - 6
+    height: networkWidgetColumn.implicitHeight
+    
+    signal enterIcon(QtObject iconMA, string actionType)
 
     // Load the InternetStatus singleton
-	InternetStatus {
-		id: internetStatus
-	}
+    InternetStatus {
+        id: internetStatus
+    }
 
     property var wifi: internetStatus.wifi
     property var ethernet: internetStatus.ethernet
 
-	Rectangle {
-		anchors.fill: parent
-		radius: theme.wsContainer.radius
-		border.width: 2
-		border.color: theme.border
-		color: theme.surface
-	}
+    Rectangle {
+        anchors.fill: parent
+        radius: theme.wsContainer.radius
+        border.width: 2
+        border.color: theme.border
+        color: theme.surface
+        anchors.margins: 0  // No margins on the rectangle itself, padding is handled by the column
 
-    ColumnLayout {
-		id: networkWidgetColumn
-		width: root.width
-		//height: 150
+        Column {
+            id: networkWidgetColumn
+            width: parent.width - 20  // Add margin on both sides
+            anchors.horizontalCenter: parent.horizontalCenter
+            spacing: 8
+            topPadding: 8
+            bottomPadding: 8
 
-        //anchors.centerIn: parent
+            IconButton {
+                id: vpnIcon
+                visible: true
+                actionType: "vpn"
+                icon: VpnStatus.vpnInfo.status === "connected" ? "" : ""
+                iconColor: VpnStatus.vpnInfo.status === "connected" ? theme.primary : theme.textDisabled
+                
+                onEntered: {
+                    VpnStatus.trigger()
+                    root.enterIcon(vpnIcon.mouseArea, vpnIcon.actionType)
+                }
+                
+                onClicked: {
+                    stopVpnProc.running = true
+                    VpnStatus.trigger()
+                }
+                
+                Process {
+                    id: stopVpnProc
+                    command: ["nxcli", "disconnect"]
+                }
+            }
 
-		IconButton {
-			id: vpnIcon
-			visible: true
-			//fontSize: root.iconSize
-			//fontSize: 30
-			actionType: "vpn"
-			icon: {
-				if (VpnStatus.vpnInfo.status === "connected") {
-					return "";
-				} else return "";
-			}
-			iconColor: {
-				if (VpnStatus.vpnInfo.status === "connected") {
-					return theme.primary
-				} else {
-					return theme.textDisabled
-				}
-			}
-			onEntered: {
-				VpnStatus.trigger()
-				root.enterIcon(vpnIcon.mouseArea, vpnIcon.actionType)
-			}
-			onClicked: {
-				stopVpnProc.running = true
-				VpnStatus.trigger()
-			}
-			Process {
-				id: stopVpnProc
-				command: ["nxcli", "disconnect"]
-			}
-		}
+            // Show WiFi icon if WiFi is connected
+            Item {
+                width: parent.width
+                height: 30
+                
+                IconButton {
+                    id: wifiIcon
+                    anchors.centerIn: parent
+                    iconColor: (wifi !== undefined && wifi.ip !== "") ? theme.accent : theme.textDisabled
+                    width: 30
+                    height: 30
+                    actionType: "network"
+                    icon: (wifi !== undefined && wifi.ip !== "") ? "󰖩" : "󰖪"
+                    
+                    onEntered: {
+                        root.enterIcon(wifiIcon.mouseArea, wifiIcon.actionType)
+                    }
+                }
+            }
 
-        // Show WiFi icon if WiFi is connected
-        IconButton {
-			id: wifiIcon
-			iconColor: {
-				if (wifi !== undefined && wifi.ip !== "") {
-					return theme.accent;
-				} else return theme.textDisabled;
-			}
-			implicitHeight: parent.width
-			//fontSize: 30
-			actionType: "network"
-			icon:  {
-				if (wifi !== undefined && wifi.ip !== "") {
-					return "󰖩";
-				} else return "󰖪";
-			}
-			onEntered: {
-				root.enterIcon(wifiIcon.mouseArea, wifiIcon.actionType)
-			}
-
-		}
-
-        // Show Ethernet icon if Ethernet is connected
-        Rectangle {
-            visible: ethernet ? ethernet.ip !== "" : false
-            color: "transparent"
-
-            Text {
-                anchors.centerIn: parent
-                font.family: "Font Awesome 6 Free"
-                font.pixelSize: 20
-                text: {
-					if (ethernet.ip !== "") {
-						return "\uf6ff";
-					} else return "";
-				}
-                color: theme.primary
+            // Show Ethernet icon if Ethernet is connected
+            Item {
+                visible: ethernet ? (ethernet.ip !== "") : false
+                width: parent.width
+                height: 30
+                
+                Text {
+                    anchors.centerIn: parent
+                    font.family: "Font Awesome 6 Free"
+                    font.pixelSize: 20
+                    text: (ethernet && ethernet.ip !== "") ? "\uf6ff" : ""
+                    color: theme.primary
+                }
             }
         }
     }

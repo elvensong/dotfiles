@@ -210,7 +210,13 @@ ShellRoot {
 
 			function clearNotificationList() {
 				for(let i = 0; i < count; i++) {
-					get(i).notiItem.dismiss()
+					let item = get(i)
+					if (item && item.notiItem && typeof item.notiItem.dismiss === 'function') {
+						item.notiItem.dismiss()
+					}
+					if (item && typeof item.dismiss === 'function') {
+						item.dismiss()
+					}
 				}
 				clear()
 			}
@@ -234,13 +240,20 @@ ShellRoot {
 					anchors.fill: parent
 
 					onClicked: {
+						if (!notiItem) {
+							console.error("Error: notiItem is null or undefined")
+							return
+						}
+						
 						console.log("Before remove: " + notiList.count)
-						console.log("notiItem ID: " + notiItem.id)
+						console.log("notiItem ID: " + (notiItem ? notiItem.id : "null"))
 						var rmIdx = -1
 						for(var i = 0; i < notiList.count; i++) {
-
-							console.log("notiList i ID: " + notiList.get(i).notiItem.id)
-							if(notiList.get(i).notiItem.id === notiItem.id) {
+							var currentItem = notiList.get(i)
+							if (!currentItem || !currentItem.notiItem) continue
+							
+							console.log("notiList i ID: " + currentItem.notiItem.id)
+							if(currentItem.notiItem.id === notiItem.id) {
 								rmIdx = i
 								console.log("Found removed notification:" + rmIdx)
 								break
@@ -270,36 +283,45 @@ ShellRoot {
 
 							Text {
 								id: title
-								text: notiItem.summary
+								text: notiItem ? notiItem.summary || "" : ""
 								font.pixelSize: 15
 								wrapMode: Text.Wrap
-								Layout.preferredWidth: notiPanel.width
+								Layout.preferredWidth: notiPanel ? notiPanel.width : 0
 								font.weight: Font.Bold
+								enabled: !!notiItem
+								visible: !!notiItem
 							}
 
 							Text {
 								id: body
-								text: notiItem.body
+								text: notiItem ? notiItem.body || "" : ""
 								font.pixelSize: 15
 								wrapMode: Text.Wrap
-								Layout.preferredWidth: notiPanel.width
+								Layout.preferredWidth: notiPanel ? notiPanel.width : 0
 								clip: false
+								enabled: !!notiItem
+								visible: !!notiItem
 							}
 
 							RowLayout {
 								id: notiActionBtnLayout
-								width: parent.width
+								width: parent ? parent.width : 0
+								enabled: !!notiItem
+								visible: !!notiItem
 								//implicitHeight: notiItemActionBtn.implicitHeight
 								Repeater {
-									model: notiItem.actions
+									model: notiItem ? notiItem.actions || [] : []
 
 									Button {
 										text: modelData.text
 										id: notiItemActionBtn
-										onClicked:{
-											console.log("Before remove: " + notiList.count)
+										onClicked: {
+											if (!modelData || typeof modelData.invoke !== 'function') {
+												console.error("Invalid notification action")
+												return
+											}
+											console.log("Invoking action for notification")
 											modelData.invoke()
-											console.log("Before remove: " + notiList.count)
 										}
 									}
 								}

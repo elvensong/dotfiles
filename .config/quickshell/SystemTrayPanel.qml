@@ -11,7 +11,7 @@ Item {
     id: root
     required property QsWindow parentWindow
     readonly property QtObject theme: ThemeManager.currentTheme
-    Layout.fillWidth: true
+    width: parent ? parent.width : 100
     height: 150
 
     Rectangle {
@@ -21,9 +21,11 @@ Item {
         border.width: 2
     }
 
-    ColumnLayout {
-        spacing: 4
+    Row {
+        spacing: 8
         anchors.fill: parent
+        anchors.margins: 4
+        layoutDirection: Qt.LeftToRight
 
         Repeater {
             model: SystemTray.items

@@ -48,8 +48,14 @@ QtObject {
 
 	property string fontFamily: "Inter"
 
+
+    // Application theme names
+    readonly property QtObject appTheme: QtObject {
+        readonly property string doomEmacs: "doom-gruvbox-light"
+    }
+
 	property QtObject wsContainer: QtObject {
-		property int radius: 40
+		property int radius: 17
 		property int borderWidth: 2
 	}
 }
